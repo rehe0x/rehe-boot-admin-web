@@ -1,6 +1,8 @@
-import React, { useState ,useEffect} from 'react';
-import { Layout,  Space, Button, Dropdown, Table,Tag} from 'antd';
-import {  AlignLeftOutlined, BarChartOutlined } from '@ant-design/icons';
+import React, { useState, useEffect } from 'react';
+import { Layout, Space, Button, Dropdown, Table, Tag } from 'antd';
+import { AlignLeftOutlined, BarChartOutlined } from '@ant-design/icons';
+import type { MenuProps } from 'antd';
+import { Common } from '@/common';
 import { Permission } from "@/components/Permission";
 import Breadcrumb from "@/components/Breadcrumb";
 import { useTable } from '@/hooks/UseTable'
@@ -8,7 +10,7 @@ import Query from '@/pages/main/user/Query'
 import { UserService } from "./service";
 import { CollectionCreateFormModal } from "@/pages/main/user/Add";
 
-const items = [
+const items:MenuProps['items'] = [
   {
     label: <a href="https://www.antgroup.com">1st menu item</a>,
     key: '0',
@@ -34,44 +36,38 @@ const App = () => {
       dataIndex: 'id',
     },
     {
-      title: '名称',
-      dataIndex: 'name',
+      title: '用户名',
+      dataIndex: 'username',
       render: (text) => <a>{text}</a>,
     },
     {
-      title: '年龄',
-      dataIndex: 'age',
+      title: '昵称',
+      dataIndex: 'nickname',
     },
     {
-      title: '地址',
-      dataIndex: 'address',
+      title: '性别',
+      dataIndex: 'gender',
     },
     {
-      title: '地址1',
-      dataIndex: 'address',
+      title: '手机',
+      dataIndex: 'phone',
     },
     {
-      title: '地址2',
-      dataIndex: 'address',
+      title: '状态',
+      dataIndex: 'enabled',
+      render: (e) => {
+        const statusMap = {
+          1: { color: 'success', text: '正常' },
+          0: { color: 'error', text: '停用' },
+        };
+        const { color, text } = statusMap[e] || { color: 'default', text: '未知状态' }
+        return (<Tag color={color}>{text}</Tag>)
+      }
     },
     {
-      title: '标签',
-      dataIndex: 'tags',
-      render: (_, { tags }) => (
-        <>
-          {tags.map((tag) => {
-            let color = tag.length > 5 ? 'geekblue' : 'green';
-            if (tag === 'loser') {
-              color = 'volcano';
-            }
-            return (
-              <Tag color={color} key={tag}>
-                {tag.toUpperCase()}
-              </Tag>
-            );
-          })}
-        </>
-      ),
+      title: '创建日期',
+      dataIndex: 'createTime',
+      render: (text) => Common.formatDate(text)
     },
     {
       title: '操作',
@@ -79,36 +75,27 @@ const App = () => {
       render: (_, record) => (
         <Space size="middle">
           <a onClick={() => refresh()}>编辑</a>
-          <a onClick={() => query({cehis:'123123',sd:'ff'})}>删除</a>
+          <a onClick={() => query({ cehis: '123123', sd: 'ff' })}>删除</a>
         </Space>
       ),
     },
   ];
-
   const [openAdd, setOpenAdd] = useState(false);
+  const { tableProps, refresh, query } = useTable(UserService.getUserList)
 
-  const{ tableProps,refresh,query }= useTable(UserService.getUserList)
-
-  
   return (
     <Layout className='page-layout' >
       <Breadcrumb />
-      
       <Layout.Content className='layout-content'>
-        <Query search={query} />
+        <Query query={query} />
       </Layout.Content>
-
-      {/* <Layout.Content className='layout-content'>
-        <Query search={search} />
-      </Layout.Content> */}
-
       <Layout.Content className='layout-content' >
         <div className='layout-title'>
           <Space size="small">
-          <Permission code={['user:add']}>
-            <Button type="primary" onClick={() => setOpenAdd(true)}>新增</Button>
-          </Permission>
-            <Button onClick={() => { form.resetFields(); }}>编辑</Button>
+            <Permission code={['user:add']}>
+              <Button type="primary" onClick={() => setOpenAdd(true)}>新增</Button>
+            </Permission>
+            <Button onClick={() => { }}>编辑</Button>
           </Space>
           <Space size="middle">
             <Dropdown menu={{ items }} trigger={['click']}>
@@ -124,7 +111,7 @@ const App = () => {
           </Space>
         </div>
 
-        <Table columns={columns} {...tableProps}/>
+        <Table columns={columns} {...tableProps} rowKey={record => record.id} />
       </Layout.Content>
       <CollectionCreateFormModal
         open={openAdd}

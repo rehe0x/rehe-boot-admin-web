@@ -32,7 +32,7 @@ interface UseTableResult<T> {
 }
 
 export const useTable = <T,>(
-  fun: (params: { pageSize: number; pageNum: number }, formData: Record<string, any>) => Promise<{ data: T[]; total: number }>)
+  fun: (params: { pageSize: number; pageNum: number }, formData?: Record<string, any>) => Promise<{ data: T[]; total: number }>)
 : UseTableResult<T> => {
   const [data, setData] = useState<TableData<T>>({
     loading: false,
@@ -63,6 +63,7 @@ export const useTable = <T,>(
   };
 
   useEffect(() => {
+    console.log(222)
     load();
   }, []);
 

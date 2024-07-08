@@ -9,5 +9,15 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
-  }
+  },
+  server: {
+    proxy: {
+      // 代理所有 /api 请求
+      '/api': {
+        target: 'http://localhost:8080', // 代理的目标地址
+        changeOrigin: true // 是否改变源地址,
+        // rewrite: (path) => path.replace(/^\/api/, ''), // 去掉路径中的 /api 前缀
+      },
+    },
+  },
 })
