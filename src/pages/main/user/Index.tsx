@@ -8,7 +8,7 @@ import Breadcrumb from "@/components/Breadcrumb";
 import { useTable } from '@/hooks/UseTable'
 import Query from '@/pages/main/user/Query'
 import { UserService } from "./service";
-import { CollectionCreateFormModal } from "@/pages/main/user/Add";
+import CreateModal from "@/pages/main/user/Create";
 
 const items:MenuProps['items'] = [
   {
@@ -80,7 +80,7 @@ const App = () => {
       ),
     },
   ];
-  const [openAdd, setOpenAdd] = useState(false);
+  const [createOpen, setCreateOpen] = useState(false);
   const { tableProps, refresh, query } = useTable(UserService.getUserList)
 
   return (
@@ -93,7 +93,7 @@ const App = () => {
         <div className='layout-title'>
           <Space size="small">
             <Permission code={['user:add']}>
-              <Button type="primary" onClick={() => setOpenAdd(true)}>新增</Button>
+              <Button type="primary" onClick={() => setCreateOpen(true)}>创建</Button>
             </Permission>
             <Button onClick={() => { }}>编辑</Button>
           </Space>
@@ -113,9 +113,9 @@ const App = () => {
 
         <Table columns={columns} {...tableProps} rowKey={record => record.id} />
       </Layout.Content>
-      <CollectionCreateFormModal
-        open={openAdd}
-        setOpenAdd={setOpenAdd}
+      <CreateModal
+        open={createOpen}
+        setOpen={setCreateOpen}
       />
     </Layout>
   );

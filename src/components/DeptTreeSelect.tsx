@@ -6,6 +6,7 @@ import type { DefaultOptionType } from 'antd/es/select';
 interface DeptTreeSelectProps {
   value?: any;
   onChange?: (value: any) => void;
+  multiple?:boolean;
 }
 
 
@@ -25,7 +26,7 @@ interface CombinedObject {
   dept: DeptObject;
   tree: TreeObject;
 }
-const DeptTreeSelect:React.FC<DeptTreeSelectProps> = ({ value, onChange }) => {
+const DeptTreeSelect:React.FC<DeptTreeSelectProps> = ({ value, onChange,multiple=false }) => {
   const [treeData, setTreeData] = useState<TreeObject[]>([])
 
   useEffect(() => {
@@ -61,9 +62,9 @@ const DeptTreeSelect:React.FC<DeptTreeSelectProps> = ({ value, onChange }) => {
     style={{ width: '100%' }}
     value={value}
     dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-    placeholder="部门多选"
+    placeholder="部门"
     allowClear
-    multiple
+    multiple={multiple}
     treeDefaultExpandAll
     onChange={onChange}
     treeData={treeData}
