@@ -61,7 +61,6 @@ const EditModal: React.FC<EditModalProps> = ({
   };
   const handleSuccess = () => {
     setConfirmLoading(false);
-    // setOpen(false);
     !isUpdate && form.resetFields();
     message.success("保存成功");
     refresh();

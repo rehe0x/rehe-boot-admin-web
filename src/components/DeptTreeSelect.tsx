@@ -31,7 +31,6 @@ const DeptTreeSelect:React.FC<DeptTreeSelectProps> = ({ value, onChange,multiple
 
   useEffect(() => {
     (async() => {
-      console.log("getDepts")
       const result = await getDepts()
       const combinedMap: Map<number, CombinedObject> = new Map(result.data?.map((node: DeptObject) => [node.id, {
         dept: node,

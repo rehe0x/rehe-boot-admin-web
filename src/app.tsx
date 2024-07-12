@@ -2,7 +2,7 @@ import React, { useReducer, useState } from 'react';
 import { ConfigProvider, Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import zhCN from 'antd/locale/zh_CN';
-
+import { customTheme } from "@/theme/config";
 import { getInitialThemeState, getAlgorithm, themeReducer } from "@/theme/themeSettings";
 import { getInitialLayoutMode, setLayoutMode } from "@/theme/layoutSettings";
 import { AppContext } from "@/stores/AppContext";
@@ -26,36 +26,8 @@ export const App = () => {
     >
       <ConfigProvider
         theme={{
-          token: {
-            screenXXL: 2000,
-            screenXXLMin: 2000,
-            screenXLMax: 1999,
-            screenXLMin: 1350,
-            screenXL: 1350,
-            screenLGMax: 1349,
-            screenLGMin: 1050,
-            screenLG: 1050,
-            screenMDMax: 1049,
-          },
+          ...customTheme,
           algorithm: getAlgorithm(themeState.algorithm),
-          components: {
-            Layout: {
-              headerHeight: 55,
-              headerBg: 'var(--ant-header-bg)',
-              siderBg: 'var(--ant-sider-bg)',
-              algorithm: true,
-            },
-            Menu: {
-              algorithm: true,
-              activeBarHeight: 0,
-              activeBarBorderWidth: 0,
-              activeBarWidth: 0,
-            }
-          },
-          cssVar: {
-            key: 'my-var-css'
-          },
-          hashed: false
         }}
         componentSize={themeState.componentSize}
         locale={zhCN}

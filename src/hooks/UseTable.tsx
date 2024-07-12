@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Result } from '@/common/types'; // 根据实际路径导入类型
 
 interface PageTableData<T> {
   loading: boolean;
@@ -61,12 +60,10 @@ export const usePageTable = <T,>(
   };
 
   useEffect(() => {
-    console.log(222)
     load();
   }, []);
 
   const pageChange = (page: number, pageSize?: number) => {
-    console.log(999)
     load({ pageNum: page, pageSize });
   };
 
@@ -85,12 +82,10 @@ export const usePageTable = <T,>(
   };
 
   const query = (formData: Record<string, any>) => {
-    console.log(555)
     load({ pageNum: 1 }, formData);
   };
 
   const refresh = () => {
-    console.log(333)
     load();
   };
 
@@ -138,7 +133,6 @@ export const useTable = <T,>(
   };
 
   useEffect(() => {
-    console.log(222)
     load();
   }, []);
 
@@ -149,12 +143,10 @@ export const useTable = <T,>(
   };
 
   const query = (formData: Record<string, any>) => {
-    console.log(555)
     load(formData);
   };
 
   const refresh = () => {
-    console.log(333)
     load();
   };
 

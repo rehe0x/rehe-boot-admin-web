@@ -6,7 +6,6 @@ import { QueryForm } from "@/components/QueryForm";
 const App = (props) => {
   const [form] = Form.useForm();
   const onFinish = (values) => {
-    console.log('Received values of form: ', values);
     props.search(values)
   };
   return (

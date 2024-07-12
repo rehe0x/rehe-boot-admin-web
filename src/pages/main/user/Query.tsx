@@ -5,11 +5,14 @@ import { QueryForm } from "@/components/QueryForm";
 
 import DeptTreeSelect from '@/components/DeptTreeSelect';
 
-const App = (props) => {
+interface QueryProps{
+  query: (formData: Record<string, any>) => void
+}
+
+const App:React.FC<QueryProps> = ({ query }) => {
   const [form] = Form.useForm();
-  const onFinish = (values) => {
-    console.log('Received values of form: ', values);
-    props.query(values)
+  const onFinish = (values: Record<string, any>) => {
+    query(values)
   };
   return (
     <Form  form={form}  onFinish={onFinish}>

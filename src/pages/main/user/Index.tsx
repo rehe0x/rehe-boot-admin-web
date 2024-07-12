@@ -76,7 +76,7 @@ const App = () => {
       key: 'action',
       render: (_, record) => (
         <Space size="middle">
-          <a onClick={() => handleFormModal(record.id)}>编辑</a>
+          <a onClick={() => handleEdit(record.id)}>编辑</a>
           <a onClick={() => delUser(record.id)}>删除</a>
         </Space>
       ),
@@ -87,7 +87,7 @@ const App = () => {
   const [editOpen, setEditOpen] = useState(false);
   const [editData, setEditData] = useState<EditData>();
 
-  const handleFormModal = (id?: number) => {
+  const handleEdit = (id?: number) => {
     setEditOpen(true);
     setEditData({ id });
   };
@@ -109,7 +109,7 @@ const App = () => {
         <div className='layout-title'>
           <Space size="small">
             <Permission code={['user:add']}>
-              <Button type="primary" onClick={() => handleFormModal()}>创建</Button>
+              <Button type="primary" onClick={() => handleEdit()}>创建</Button>
             </Permission>
             {/* <Button onClick={() => handleFormModal(1)}>编辑</Button> */}
           </Space>

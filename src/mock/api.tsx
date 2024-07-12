@@ -7,7 +7,6 @@ fetchMock.config.fallbackToNetwork = true;
  */
 fetchMock.get('/api/user/getMenu', (url, opts) => {
   const queryParams = qs.parse(url.split('?')[1])
-  console.log('Query params:', queryParams);
 
   const menuList = [
     
@@ -264,7 +263,6 @@ fetchMock.get('/api/user/getMenu', (url, opts) => {
  */
 fetchMock.get('/api/user/getMenuTop', (url, opts) => {
   const queryParams = qs.parse(url.split('?')[1])
-  console.log('Query params:', queryParams);
 
   const menuList = [
     {
@@ -509,7 +507,6 @@ fetchMock.get('/api/user/getMenuTop', (url, opts) => {
  */
 fetchMock.get('/api/user/getMenuLeft', (url, opts) => {
   const queryParams = qs.parse(url.split('?')[1])
-  console.log('Query params:', queryParams);
 
   const menuList = [
     {
@@ -652,12 +649,10 @@ fetchMock.get('begin:/api/user/info', (url, opts) => {
  */
 fetchMock.get('begin:/api/user/list', (url, opts) => {
   const queryParams = qs.parse(url.split('?')[1])
-  console.log('Query params:', queryParams);
 
   const userList = []
   const pageNum = queryParams?.pageNum ? queryParams?.pageNum as number : 1
   const pageSize = queryParams?.pageSize ? queryParams?.pageSize as number : 10
-  console.log(pageSize)
   var i = 1;
   while(i<=pageSize){
     userList.push({

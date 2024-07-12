@@ -75,7 +75,6 @@ class http {
     }
 
     const newOptions: RequestInit = { ...defaultOptions, ...options, headers };
-    console.log('newOptions', newOptions);
     return fetch(url, newOptions)
       .then(checkStatus)
       .then(judgeOkState)
@@ -127,7 +126,6 @@ class http {
     if(Object.keys(params).length !== 0){
        urlParam = '?'+stringify(params)
     }
-    console.log(urlParam)
     return http.bashFetch(url+urlParam, options);
   }
 }

@@ -31,8 +31,6 @@ const App = () => {
       layoutMode == 2 ? '/api/user/getMenuTop' :
       layoutMode == 3 ? '/api/user/getMenuLeft' :
       '/api/user/getMenu';
-      console.log("menuUrl")
-      console.log(layoutMode)
       const {data} = await request.get(menuUrl);
 
       const {data:{username}}  = await request.get('/api/user/info');

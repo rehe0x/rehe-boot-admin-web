@@ -9,7 +9,6 @@ const LoginFrom = () => {
 
   const navigate = useNavigate()
   const onFinish = (values) => {
-    console.log('Received values of form: ', values);
     setLoading(true)
     setTimeout(() => {
       storage.setStorage('token','123123')

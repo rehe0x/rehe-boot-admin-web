@@ -1,5 +1,5 @@
 import storage from "@/common/storage";
-import ThemeCustom from "@/theme/index";
+import ThemeAlgorithm from "@/theme/algorithm";
 
 export const getInitialThemeState = () => {
   const themeConfig: { algorithm?: string; componentSize?: string } = storage.getStorage('themeConfig') || {};
@@ -13,11 +13,11 @@ export const getInitialThemeState = () => {
 export const getAlgorithm = (action: string) => {
   switch (action) {
     case 'light':
-      return ThemeCustom.CustomDefaultAlgorithm;
+      return ThemeAlgorithm.CustomDefaultAlgorithm;
     case 'dark':
-      return ThemeCustom.CustomDarkAlgorithm;
+      return ThemeAlgorithm.CustomDarkAlgorithm;
     default:
-      return ThemeCustom.CustomDefaultAlgorithm;
+      return ThemeAlgorithm.CustomDefaultAlgorithm;
   }
 };
 
