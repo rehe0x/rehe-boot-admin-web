@@ -1,7 +1,7 @@
-import React, { lazy, Suspense, ReactElement } from 'react';
-import { Spin } from "antd";
-import * as icons from '@ant-design/icons';
-import { LoadingOutlined } from '@ant-design/icons';
+import React, { lazy, Suspense, ReactElement } from "react";
+import { Spin, ConfigProvider } from "antd";
+import * as icons from "@ant-design/icons";
+import { LoadingOutlined } from "@ant-design/icons";
 
 // 类型定义
 export interface Menu {
@@ -37,8 +37,8 @@ export interface RouteObject {
 /**
  * 组件读取
  */
-const layout_modules = import.meta.glob('@/layouts/*.tsx');
-const page_modules = import.meta.glob('@/pages/**/*.tsx');
+const layout_modules = import.meta.glob("@/layouts/*.tsx");
+const page_modules = import.meta.glob("@/pages/**/*.tsx");
 const modules = { ...layout_modules, ...page_modules };
 function pathToLazyComponent(filePath: string): ReactElement {
   const path = modules[`/src${filePath}`] as any;
@@ -49,30 +49,38 @@ function pathToLazyComponent(filePath: string): ReactElement {
   return (
     <Suspense
       fallback={
-        <Spin
-          spinning={true}
-          className='lazy-spin'
-          fullscreen
-          style={{ marginTop: '55px' }}
-          indicator={
-            <LoadingOutlined
-              style={{ fontSize: 36, bottom: '100px' }}
-              spin
-            />
-          }
-        />
+        <ConfigProvider
+          theme={{
+            token: {
+              colorBgMask: "rgba(0, 0, 0, 0.02)",
+            },
+          }}
+        >
+          <Spin
+            spinning={true}
+            className="lazy-spin"
+            fullscreen
+            style={{ marginTop: "55px" }}
+            indicator={
+              <LoadingOutlined style={{ fontSize: 36, bottom: "100px" }} spin />
+            }
+          />
+        </ConfigProvider>
       }
     >
       <Component />
     </Suspense>
   );
-};
+}
 
 // 获取菜单root节点
-function findMenuRoot(nodeMap: Map<number, Menu>, parentId: number, path: string)
-: { rootNode: Menu, path: string } {
+function findMenuRoot(
+  nodeMap: Map<number, Menu>,
+  parentId: number,
+  path: string
+): { rootNode: Menu; path: string } {
   const node = nodeMap.get(parentId);
-  if(!node){
+  if (!node) {
     throw new Error("菜单数据异常！");
   }
   if (node.parentId === 0) {
@@ -82,14 +90,22 @@ function findMenuRoot(nodeMap: Map<number, Menu>, parentId: number, path: string
 }
 
 // 菜单转路由对象
-function menuToRouteObject(node: Menu, children: RouteObject[], menuObject: MenuObject): RouteObject {
+function menuToRouteObject(
+  node: Menu,
+  children: RouteObject[],
+  menuObject: MenuObject
+): RouteObject {
   return {
     id: node.id,
-    element: pathToLazyComponent(node.component + '.tsx'),
+    element: pathToLazyComponent(node.component + ".tsx"),
     children,
-    loader: () => node.parentId === 0 && node.menuType === 1 
-      ? { menus: menuObject.children } 
-      : { parentPaths: menuObject.parent_paths, title: [...menuObject.parent_title, menuObject.label] }
+    loader: () =>
+      node.parentId === 0 && node.menuType === 1
+        ? { menus: menuObject.children }
+        : {
+            parentPaths: menuObject.parent_paths,
+            title: [...menuObject.parent_title, menuObject.label],
+          },
   };
 }
 
@@ -99,22 +115,32 @@ function menuToMenuObject(node: Menu): MenuObject {
     key: node.routePath,
     label: node.title,
     children: null,
-    icon: node.icon && icons[node.icon] ? React.createElement(icons[node.icon]) : null,
+    icon:
+      node.icon && icons[node.icon]
+        ? React.createElement(icons[node.icon])
+        : null,
     menu_type: node.menuType,
     parent_paths: [],
-    parent_title: []
+    parent_title: [],
   };
 }
 
 /**
  * 后台扁平化菜单生成树菜单和路由和权限
  */
-export function menuArrayToTreeMap(menus: Menu[])
-  : { topMenuTree: MenuObject[], menuTree: MenuObject[], routeTree: RouteObject[], permissions: string[] } {
-  
-  const menuMap:Map<number, Menu> = new Map(menus.map((node) => [node.id, node]));
-  const menuObjectMap:Map<number, MenuObject> = new Map(menus.map((node) => [node.id, menuToMenuObject(node)]));
-  
+export function menuArrayToTreeMap(menus: Menu[]): {
+  topMenuTree: MenuObject[];
+  menuTree: MenuObject[];
+  routeTree: RouteObject[];
+  permissions: string[];
+} {
+  const menuMap: Map<number, Menu> = new Map(
+    menus.map((node) => [node.id, node])
+  );
+  const menuObjectMap: Map<number, MenuObject> = new Map(
+    menus.map((node) => [node.id, menuToMenuObject(node)])
+  );
+
   const permissions: string[] = [];
   const menuTree: MenuObject[] = [];
   const routesMap = new Map<number, RouteObject>();
@@ -124,7 +150,7 @@ export function menuArrayToTreeMap(menus: Menu[])
     if (node.menuType !== 2 && (!node.hidden || node.hidden !== 1)) {
       const menuObject = menuObjectMap.get(node.id)!;
       if (node.parentId === 0) {
-        menuObject.key = menuObject.key === '/' ? "" : "/" + menuObject.key;
+        menuObject.key = menuObject.key === "/" ? "" : "/" + menuObject.key;
         menuTree.push(menuObject);
       } else {
         const parent = menuObjectMap.get(node.parentId)!;
@@ -144,34 +170,48 @@ export function menuArrayToTreeMap(menus: Menu[])
     if (node.menuType !== 1) return;
     const routeObj = menuToRouteObject(node, [], menuObjectMap.get(node.id)!);
     if (node.parentId === 0) {
-      routeObj.path = node.routePath === '/' ? '/*' : node.routePath + `/*`;
+      routeObj.path = node.routePath === "/" ? "/*" : node.routePath + `/*`;
       routesMap.set(routeObj.id, routeObj);
     } else {
-      const { rootNode, path } = findMenuRoot(menuMap, node.parentId, '');
+      const { rootNode, path } = findMenuRoot(menuMap, node.parentId, "");
       if (rootNode.menuType === 1) {
-        routeObj.path = rootNode.routePath === '/' ? '/*/' + path + node.routePath : path + node.routePath;
+        routeObj.path =
+          rootNode.routePath === "/"
+            ? "/*/" + path + node.routePath
+            : path + node.routePath;
         const route = routesMap.get(rootNode.id);
         if (route) {
           route.children.push(routeObj);
         } else {
-          const rootRouteObj = menuToRouteObject(rootNode, [routeObj], menuObjectMap.get(rootNode.id)!);
-          rootRouteObj.path = rootNode.routePath === '/' ? '/*' : rootNode.routePath + `/*`;
+          const rootRouteObj = menuToRouteObject(
+            rootNode,
+            [routeObj],
+            menuObjectMap.get(rootNode.id)!
+          );
+          rootRouteObj.path =
+            rootNode.routePath === "/" ? "/*" : rootNode.routePath + `/*`;
           routesMap.set(rootRouteObj.id, rootRouteObj);
         }
       } else {
-        routeObj.path = rootNode.routePath === '/'
-          ? rootNode.routePath + '*/' + path + node.routePath
-          : rootNode.routePath + '/' + path + node.routePath;
+        routeObj.path =
+          rootNode.routePath === "/"
+            ? rootNode.routePath + "*/" + path + node.routePath
+            : rootNode.routePath + "/" + path + node.routePath;
         routesMap.set(routeObj.id, routeObj);
       }
     }
   });
 
   // 生成顶部菜单
-  const topMenuTree = menuTree.map(element => ({
+  const topMenuTree = menuTree.map((element) => ({
     ...element,
     children: element.menu_type === 0 ? element.children : null,
   }));
 
-  return { topMenuTree, menuTree, routeTree: Array.from(routesMap.values()), permissions };
+  return {
+    topMenuTree,
+    menuTree,
+    routeTree: Array.from(routesMap.values()),
+    permissions,
+  };
 }

@@ -27,7 +27,6 @@ export const App = () => {
       <ConfigProvider
         theme={{
           token: {
-            colorBgMask: 'rgba(0, 0, 0, 0.02)',
             screenXXL: 2000,
             screenXXLMin: 2000,
             screenXLMax: 1999,

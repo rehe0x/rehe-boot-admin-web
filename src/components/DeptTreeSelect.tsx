@@ -31,6 +31,7 @@ const DeptTreeSelect:React.FC<DeptTreeSelectProps> = ({ value, onChange,multiple
 
   useEffect(() => {
     (async() => {
+      console.log("getDepts")
       const result = await getDepts()
       const combinedMap: Map<number, CombinedObject> = new Map(result.data?.map((node: DeptObject) => [node.id, {
         dept: node,
@@ -40,7 +41,8 @@ const DeptTreeSelect:React.FC<DeptTreeSelectProps> = ({ value, onChange,multiple
           children: null
         }
       }]));
-      const deptTree: TreeObject[] = [];    
+      const deptTree: TreeObject[] = [];
+     
       combinedMap.forEach((combinedObject) => {
         const { dept, tree } = combinedObject;
         if (dept.parentId === 0) {
@@ -60,7 +62,7 @@ const DeptTreeSelect:React.FC<DeptTreeSelectProps> = ({ value, onChange,multiple
     <TreeSelect
     showSearch
     style={{ width: '100%' }}
-    value={value}
+    value={value === 0 ? undefined:value}
     dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
     placeholder="部门"
     allowClear

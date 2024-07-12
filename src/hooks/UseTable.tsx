@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import { Result } from '@/common/types'; // 根据实际路径导入类型
 
-interface TableData<T> {
+interface PageTableData<T> {
   loading: boolean;
   pageSize: number;
   pageNum: number;
@@ -19,22 +20,19 @@ interface Pagination {
   onChange: (page: number, pageSize?: number) => void;
 }
 
-interface TableProps<T> {
+interface PageTableProps<T> {
   loading: boolean;
   dataSource: T[];
-  pagination: Pagination;
+  pagination?: Pagination;
 }
 
-interface UseTableResult<T> {
-  tableProps: TableProps<T>;
-  refresh: () => void;
-  query: (formData: Record<string, any>) => void;
-}
 
-export const useTable = <T,>(
-  fun: (params: { pageSize: number; pageNum: number }, formData?: Record<string, any>) => Promise<{ data: T[]; total: number }>)
-: UseTableResult<T> => {
-  const [data, setData] = useState<TableData<T>>({
+type UsePageTableResult<T> = [PageTableProps<T>, () => void, (formData: Record<string, any>) => void];
+
+export const usePageTable = <T,>(
+  fun: (params: { pageSize: number; pageNum: number,[key: string]: any }) => Promise<{ data: T[]; page: {total:number} }>)
+: UsePageTableResult<T> => {
+  const [data, setData] = useState<PageTableData<T>>({
     loading: false,
     pageSize: 10,
     pageNum: 1,
@@ -43,22 +41,22 @@ export const useTable = <T,>(
     formData: {}
   });
 
-  const load = async ({ pageNum = data.pageNum, pageSize = data.pageSize } = {}, formData = data.formData) => {
+  const load = async ({ pageNum = data.pageNum, pageSize = data.pageSize } = {}, params = data.formData) => {
     setData(prevData => ({
       ...prevData,
       loading: true,
     }));
 
-    const result = await fun({ pageSize, pageNum }, formData);
+    const result = await fun({ pageSize, pageNum ,...params});
 
-    setData(prevData => ({
+    setData((prevData):PageTableData<T> => ({
       ...prevData,
       loading: false,
       tableList: result.data,
-      total: result.total,
+      total: result.page.total || 0,
       pageSize,
       pageNum,
-      formData
+      formData:params
     }));
   };
 
@@ -68,10 +66,11 @@ export const useTable = <T,>(
   }, []);
 
   const pageChange = (page: number, pageSize?: number) => {
+    console.log(999)
     load({ pageNum: page, pageSize });
   };
 
-  const tableProps: TableProps<T> = {
+  const tableProps: PageTableProps<T> = {
     loading: data.loading,
     dataSource: data.tableList,
     pagination: {
@@ -86,12 +85,80 @@ export const useTable = <T,>(
   };
 
   const query = (formData: Record<string, any>) => {
+    console.log(555)
     load({ pageNum: 1 }, formData);
   };
 
   const refresh = () => {
+    console.log(333)
     load();
   };
 
-  return { tableProps, refresh, query };
+  return [tableProps, refresh, query];
 };
+
+
+interface TableData<T> {
+  loading: boolean;
+  tableList: T[];
+  formData: Record<string, any>;
+}
+
+interface TableProps<T> {
+  loading: boolean;
+  dataSource: T[];
+  pagination:false
+}
+
+type UseTableResult<T> = [TableProps<T>, () => void, (formData: Record<string, any>) => void];
+
+export const useTable = <T,>(
+  fun: (params: Record<string, any>) => Promise<{ data: T[]; total: number }>)
+: UseTableResult<T> => {
+  const [data, setData] = useState<TableData<T>>({
+    loading: false,
+    tableList: [],
+    formData: {}
+  });
+
+  const load = async (params = data.formData) => {
+    setData(prevData => ({
+      ...prevData,
+      loading: true,
+    }));
+
+    const result = await fun(params);
+
+    setData((prevData):TableData<T> => ({
+      ...prevData,
+      loading: false,
+      tableList: result.data,
+      formData:params,
+    }));
+  };
+
+  useEffect(() => {
+    console.log(222)
+    load();
+  }, []);
+
+  const tableProps: TableProps<T> = {
+    loading: data.loading,
+    dataSource: data.tableList,
+    pagination:false
+  };
+
+  const query = (formData: Record<string, any>) => {
+    console.log(555)
+    load(formData);
+  };
+
+  const refresh = () => {
+    console.log(333)
+    load();
+  };
+
+  return [tableProps, refresh, query];
+};
+
+

@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Space, Button, Dropdown, Table, Tag } from 'antd';
+import { message,Layout, Space, Button, Dropdown, Table, Tag } from 'antd';
 import { AlignLeftOutlined, BarChartOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Common } from '@/common';
 import { Permission } from "@/components/Permission";
 import Breadcrumb from "@/components/Breadcrumb";
-import { useTable } from '@/hooks/UseTable'
-import Query from '@/pages/main/user/Query'
-import { UserService } from "./service";
-import CreateModal from "@/pages/main/user/Create";
+import { useTable,usePageTable } from '@/hooks/UseTable'
+
+import { User,EditData } from "./types";
+import Query from './Query'
+import { getUserList,deleteUser } from "./service";
+import EditModal from "./Edit";
 
 const items:MenuProps['items'] = [
   {
@@ -74,15 +76,29 @@ const App = () => {
       key: 'action',
       render: (_, record) => (
         <Space size="middle">
-          <a onClick={() => refresh()}>编辑</a>
-          <a onClick={() => query({ cehis: '123123', sd: 'ff' })}>删除</a>
+          <a onClick={() => handleFormModal(record.id)}>编辑</a>
+          <a onClick={() => delUser(record.id)}>删除</a>
         </Space>
       ),
     },
   ];
-  const [createOpen, setCreateOpen] = useState(false);
-  const { tableProps, refresh, query } = useTable(UserService.getUserList)
 
+  const [tableProps, refresh, query] = usePageTable(getUserList)
+  const [editOpen, setEditOpen] = useState(false);
+  const [editData, setEditData] = useState<EditData>();
+
+  const handleFormModal = (id?: number) => {
+    setEditOpen(true);
+    setEditData({ id });
+  };
+
+  const delUser =async (id: number) => {
+    const result = await deleteUser(id)
+    if(result.successful){
+      message.success("删除成功")
+      refresh()
+    }
+  };
   return (
     <Layout className='page-layout' >
       <Breadcrumb />
@@ -93,9 +109,9 @@ const App = () => {
         <div className='layout-title'>
           <Space size="small">
             <Permission code={['user:add']}>
-              <Button type="primary" onClick={() => setCreateOpen(true)}>创建</Button>
+              <Button type="primary" onClick={() => handleFormModal()}>创建</Button>
             </Permission>
-            <Button onClick={() => { }}>编辑</Button>
+            {/* <Button onClick={() => handleFormModal(1)}>编辑</Button> */}
           </Space>
           <Space size="middle">
             <Dropdown menu={{ items }} trigger={['click']}>
@@ -113,9 +129,11 @@ const App = () => {
 
         <Table columns={columns} {...tableProps} rowKey={record => record.id} />
       </Layout.Content>
-      <CreateModal
-        open={createOpen}
-        setOpen={setCreateOpen}
+      <EditModal
+        open={editOpen}
+        setOpen={setEditOpen}
+        data={editData}
+        refresh={refresh}
       />
     </Layout>
   );
