@@ -108,7 +108,7 @@ interface TableProps<T> {
 type UseTableResult<T> = [TableProps<T>, () => void, (formData: Record<string, any>) => void];
 
 export const useTable = <T,>(
-  fun: (params: Record<string, any>) => Promise<{ data: T[]; total: number }>)
+  fun: (params: Record<string, any>) => Promise<{ data: T[] }>)
 : UseTableResult<T> => {
   const [data, setData] = useState<TableData<T>>({
     loading: false,
