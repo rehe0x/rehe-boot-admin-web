@@ -13,7 +13,7 @@ import {
   Flex,
 } from "antd";
 import CustomFormModal from "@/components/CustomFormModal";
-import DeptTreeSelect from "@/components/DeptTreeSelect";
+import MenuTreeSelect from "./_MenuTreeSelect";
 import { EditData } from "./types";
 import { getMenuById, createMenu, updateMenu } from "./service";
 
@@ -140,6 +140,12 @@ const EditModal: React.FC<EditModalProps> = ({
         </Form.Item>
 
         <Form.Item
+          name="parentId"
+          label="上级"
+        >
+          <MenuTreeSelect />
+        </Form.Item>
+        <Form.Item
           name="title"
           label={
             menuTypeOptions.find((item) => item.value === menuTypeValue)
@@ -149,6 +155,8 @@ const EditModal: React.FC<EditModalProps> = ({
         >
           <Input allowClear disabled={false} />
         </Form.Item>
+
+
 
         {menuTypeValue === 1 && (
           <Form.Item
