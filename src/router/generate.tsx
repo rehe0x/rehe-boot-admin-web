@@ -80,10 +80,17 @@ function pathToLazyComponent(filePath: string): ReactElement {
   if (!path) {
     return <div>error</div>;
   }
-  const Component = lazy(path);
+  // const Component = lazy(path);
+
+  // 异步加载的组件
+  const Component = lazy(() => {
+    return new Promise(resolve => 
+      setTimeout(resolve, 200)
+    ).then(path);
+  });
+
   return (
     <Suspense
-      key={filePath}
       fallback={
         <ConfigProvider
           theme={{
