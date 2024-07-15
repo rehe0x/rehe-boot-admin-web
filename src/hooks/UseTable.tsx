@@ -113,15 +113,15 @@ interface TableProps<T> {
   pagination:false
 }
 
-type UseTableResult<T> = [TableProps<T>, () => void, (formData: Record<string, any>) => void];
+type UseTableResult<T> = [TableProps<T>, () => void, (formData: Record<string, any>) => void, params:Record<string, any>];
 
 export const useTable = <T,>(
-  fun: (params: Record<string, any>) => Promise<{ data: T[] }>)
+  fun: (params: Record<string, any>) => Promise<{ data: T[] }>, defaultParams?:Record<string, any>)
 : UseTableResult<T> => {
   const [data, setData] = useState<TableData<T>>({
     loading: false,
     tableList: [],
-    formData: {}
+    formData: defaultParams || {}
   });
 
   const load = async (params = data.formData) => {
@@ -130,13 +130,13 @@ export const useTable = <T,>(
       loading: true,
     }));
 
-    const result = await fun(params);
+    const result = await fun({...data.formData,...params});
 
     setData((prevData):TableData<T> => ({
       ...prevData,
       // loading: false,
       tableList: result.data,
-      formData:params,
+      formData:{ ...prevData.formData,...params},
     }));
 
     setTimeout(() => {
@@ -165,7 +165,7 @@ export const useTable = <T,>(
     load();
   };
 
-  return [tableProps, refresh, query];
+  return [tableProps, refresh, query, data.formData];
 };
 
 

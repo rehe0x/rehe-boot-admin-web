@@ -8,7 +8,9 @@ import {
   Tag,
   message,
   Popconfirm,
-  TableColumnsType
+  TableColumnsType,
+  RadioChangeEvent,
+  Radio
 } from "antd";
 import {
   PlusOutlined,
@@ -87,14 +89,15 @@ const App = () => {
       ),
     },
   ];
-  const [tableProps, refresh, query] = useTable(getMenuTree);
+  const [tableProps, refresh, query, params] = useTable(getMenuTree,{platformId: 1});
   const [editOpen, setEditOpen] = useState(false);
-  const [editData, setEditData] = useState<EditData>();
-  const handleEdit = (event?: React.MouseEvent, editData?: EditData) => {
+  const [editData, setEditData] = useState<EditData>({platformId: params.platformId});
+
+  const handleEdit = (event?: React.MouseEvent, data?: EditData) => {
     event && event.stopPropagation();
-    const { id, update = false } = editData ?? {};
+    const { id, update = false } = data ?? {};
     setEditOpen(true);
-    setEditData({ id, update });
+    setEditData((prev) => ({ ...prev, id, update, platformId:params.platformId }));
   };
 
   const delMenu = async (id: number) => {
@@ -104,6 +107,17 @@ const App = () => {
       refresh();
     }
   };
+
+  const platformOptions = [
+    { label: "系统一", value: 1 },
+    { label: "系统二", value: 2 },
+    { label: "系统三", value: 3 },
+  ];
+
+  const platformOnChange = ({ target: { value } }:RadioChangeEvent) => {
+    query({platformId: value})
+  }
+
   return (
     <Layout className="page-layout">
       <Breadcrumb />
@@ -114,6 +128,15 @@ const App = () => {
 
       <Layout.Content className="layout-content">
         <div className="layout-title">
+          <Space size="small">
+          <Radio.Group
+            options={platformOptions}
+            onChange={platformOnChange}
+            buttonStyle="solid"
+            optionType="button"
+            defaultValue={1}
+          />
+          </Space>
           <Space size="small">
             <Button type="primary" onClick={() => handleEdit()}>
               创建

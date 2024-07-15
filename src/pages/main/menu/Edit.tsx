@@ -20,7 +20,7 @@ import { getMenuById, createMenu, updateMenu } from "./service";
 interface EditModalProps {
   open: boolean;
   setOpen: (open: boolean) => void;
-  data?: EditData;
+  data: EditData;
   refresh: () => void;
 }
 
@@ -37,8 +37,8 @@ const EditModal: React.FC<EditModalProps> = ({
   const [menuTypeValue, setMenuTypeValue] = useState(0);
   const [routeDefault, setRouteDefault] = useState(false);
 
-  const isUpdate = data && data.id && data.update;
-  const isCreate = data && data.id && !data.update;
+  const isUpdate = data.id && data.update;
+  const isCreate = data.id && !data.update;
 
   useEffect(() => {
     fetchMenu();
@@ -69,7 +69,7 @@ const EditModal: React.FC<EditModalProps> = ({
       if (isUpdate) {
         result = await updateMenu({ id: data.id, ...values });
       } else {
-        result = await createMenu(values);
+        result = await createMenu({platformId:data.platformId ,...values});
       }
       if (result.successful) {
         handleSuccess();
@@ -142,7 +142,7 @@ const EditModal: React.FC<EditModalProps> = ({
         </Form.Item>
 
         <Form.Item name="parentId" label="上级">
-          <MenuTreeSelect disabled={!!isUpdate || !!isCreate} />
+          <MenuTreeSelect disabled={!!isUpdate || !!isCreate} platformId={data.platformId} />
         </Form.Item>
         <Form.Item
           name="title"

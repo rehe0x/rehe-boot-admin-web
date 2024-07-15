@@ -8,6 +8,7 @@ interface MenuTreeSelectProps {
   onChange?: (value: any) => void;
   multiple?:boolean;
   disabled?:boolean;
+  platformId:number;
 }
 
 
@@ -24,7 +25,7 @@ export interface TreeObject extends DefaultOptionType{
 }
 
 
-export const MenuTreeSelect:React.FC<MenuTreeSelectProps> = ({ value, onChange,multiple=false,disabled = false }) => {
+export const MenuTreeSelect:React.FC<MenuTreeSelectProps> = ({ value, onChange,multiple=false,disabled = false, platformId}) => {
   const [treeData, setTreeData] = useState<TreeObject[]>([])
   const menuTypeOptions = [
     { label: "目录", value: 0 },
@@ -45,7 +46,7 @@ const transformItem = (item): TreeObject => {
 
   useEffect(() => {
     (async() => {
-      const result = await getMenuTree()
+      const result = await getMenuTree({platformId})
       const menuTree:TreeObject[] = result.data.map((item) => transformItem(item))
       setTreeData([{
         value: 0,

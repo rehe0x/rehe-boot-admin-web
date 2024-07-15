@@ -19,5 +19,6 @@ export interface Menu {
 
 export interface EditData{
   id?:number,
-  update?:boolean
+  update?:boolean,
+  platformId:number
 }
