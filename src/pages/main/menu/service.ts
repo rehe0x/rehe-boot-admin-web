@@ -12,6 +12,11 @@ export const updateMenu = async (params?: Record<string, any>): R<any> => {
   return result;
 }
 
+export const deleteMenu = async (id:number): R<any> => {
+  const result = await request.post('/api/v1/system/menu/delete/'+id);
+  return result;
+}
+
 export const getMenuById = async (id:number): R<Menu> => {
   const result = await request.get('/api/v1/system/menu/get/'+id);
   return result;

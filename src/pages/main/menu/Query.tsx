@@ -3,8 +3,6 @@ import { Button,  Form, Input,  Space  } from 'antd';
 
 import { QueryForm } from "@/components/QueryForm";
 
-import DeptTreeSelect from '@/components/DeptTreeSelect';
-
 interface QueryProps{
   query: (formData: Record<string, any>) => void
 }
@@ -18,11 +16,9 @@ const App:React.FC<QueryProps> = ({ query }) => {
     <Form  form={form}  onFinish={onFinish}>
       <QueryForm>
           <Form.Item name="keyword" label='关键字'>
-            <Input placeholder="用户名/昵称/手机/ID" />
+            <Input placeholder="菜单/路由/组件/权限/ID" />
           </Form.Item>
-          <Form.Item name="deptIds" label='部门'>
-            <DeptTreeSelect multiple/>
-          </Form.Item>
+         
           <Space size="small">
             <Button type="primary" htmlType="submit">
               查询

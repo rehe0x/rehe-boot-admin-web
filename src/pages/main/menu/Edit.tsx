@@ -13,7 +13,7 @@ import {
   Flex,
 } from "antd";
 import CustomFormModal from "@/components/CustomFormModal";
-import MenuTreeSelect from "./_MenuTreeSelect";
+import MenuTreeSelect from "./MenuTreeSelect";
 import { EditData } from "./types";
 import { getMenuById, createMenu, updateMenu } from "./service";
 
@@ -37,14 +37,15 @@ const EditModal: React.FC<EditModalProps> = ({
   const [menuTypeValue, setMenuTypeValue] = useState(0);
   const [routeDefault, setRouteDefault] = useState(false);
 
-  const isUpdate = data && data.id;
+  const isUpdate = data && data.id && data.update;
+  const isCreate = data && data.id && !data.update;
 
   useEffect(() => {
     fetchMenu();
   }, [data]);
 
   useEffect(() => {
-    !isUpdate && open && form.resetFields();
+    !isUpdate && !isCreate && open && form.resetFields();
   }, [menuTypeValue]);
 
   const fetchMenu = async () => {
@@ -57,12 +58,12 @@ const EditModal: React.FC<EditModalProps> = ({
         setLoading(false);
       }, 200);
     }
+    isCreate && form.setFieldsValue({ parentId: data.id });
   };
- 
+
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
-      console.log(values);
       setConfirmLoading(true);
       let result: { successful: boolean };
       if (isUpdate) {
@@ -79,20 +80,21 @@ const EditModal: React.FC<EditModalProps> = ({
       setConfirmLoading(false);
     }
   };
+
   const handleSuccess = () => {
     setConfirmLoading(false);
     !isUpdate && form.resetFields();
+    isCreate && form.setFieldsValue({ parentId: data.id });
     message.success("保存成功");
     refresh();
   };
 
   const menuTypeOnChange = ({ target: { value } }: RadioChangeEvent) => {
-    console.log("radio3 checked", value);
     setMenuTypeValue(value);
     setRouteDefault(false);
   };
 
-  const routeDefaultSwitchChange = (checked) => {
+  const routeDefaultSwitchChange = (checked: boolean) => {
     setRouteDefault(checked);
     !isUpdate && checked && form.resetFields(["routePath"]); // 清除 routePath 的错误提示
   };
@@ -117,7 +119,7 @@ const EditModal: React.FC<EditModalProps> = ({
       setOpen={setOpen}
       confirmLoading={confirmLoading}
       handleSubmit={handleSubmit}
-      resetFields={!isUpdate ? form.resetFields : undefined}
+      resetFields={!isUpdate && !isCreate ? form.resetFields : undefined}
     >
       <Form
         form={form}
@@ -139,11 +141,8 @@ const EditModal: React.FC<EditModalProps> = ({
           />
         </Form.Item>
 
-        <Form.Item
-          name="parentId"
-          label="上级"
-        >
-          <MenuTreeSelect />
+        <Form.Item name="parentId" label="上级">
+          <MenuTreeSelect disabled={!!isUpdate || !!isCreate} />
         </Form.Item>
         <Form.Item
           name="title"
@@ -155,8 +154,6 @@ const EditModal: React.FC<EditModalProps> = ({
         >
           <Input allowClear disabled={false} />
         </Form.Item>
-
-
 
         {menuTypeValue === 1 && (
           <Form.Item

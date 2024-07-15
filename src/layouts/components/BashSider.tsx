@@ -28,6 +28,7 @@ const App:React.FC<{menus:any[]}> = (props) => {
     window.setTimeout(() => {
       NProgress.done();
     }, 350);
+    
     navigate(`${item.key}`);
   }
   // 默认选中菜单

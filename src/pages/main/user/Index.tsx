@@ -127,7 +127,7 @@ const App = () => {
           </Space>
         </div>
 
-        <Table columns={columns} {...tableProps} rowKey={record => record.id} />
+      <Table columns={columns} {...tableProps} rowKey={record => record.id} />
       </Layout.Content>
       <EditModal
         open={editOpen}

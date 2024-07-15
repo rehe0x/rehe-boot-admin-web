@@ -1,4 +1,5 @@
 import React, { lazy, Suspense, ReactElement } from "react";
+import { useLocation } from 'react-router-dom';
 import { Spin, ConfigProvider } from "antd";
 import * as icons from "@ant-design/icons";
 import { LoadingOutlined } from "@ant-design/icons";
@@ -40,6 +41,40 @@ export interface RouteObject {
 const layout_modules = import.meta.glob("@/layouts/*.tsx");
 const page_modules = import.meta.glob("@/pages/**/*.tsx");
 const modules = { ...layout_modules, ...page_modules };
+
+// const LazyComponentWrapper = ({ filePath }) => {
+//   const location = useLocation();
+//   const path = modules[`/src${filePath}`] as any;
+//   const Component = lazy(path);
+//   return (
+//     <Suspense
+//       key={location.pathname} // 使用路由路径作为 key
+//       fallback={
+//         <ConfigProvider
+//           theme={{
+//             token: {
+//               colorBgMask: "rgba(0, 0, 0, 0.02)",
+//             },
+//           }}
+//         >
+//           <Spin
+//             spinning={true}
+//             className="lazy-spin"
+//             fullscreen
+//             style={{ marginTop: "55px" }}
+//             indicator={
+//               <LoadingOutlined style={{ fontSize: 36, bottom: "100px" }} spin />
+//             }
+//           />
+//         </ConfigProvider>
+//       }
+//     >
+//       <Component />
+//     </Suspense>
+//   );
+// };
+
+
 function pathToLazyComponent(filePath: string): ReactElement {
   const path = modules[`/src${filePath}`] as any;
   if (!path) {
@@ -48,6 +83,7 @@ function pathToLazyComponent(filePath: string): ReactElement {
   const Component = lazy(path);
   return (
     <Suspense
+      key={filePath}
       fallback={
         <ConfigProvider
           theme={{
@@ -98,6 +134,7 @@ function menuToRouteObject(
   return {
     id: node.id,
     element: pathToLazyComponent(node.component + ".tsx"),
+    // element: <LazyComponentWrapper filePath={node.component + ".tsx"}/>,
     children,
     loader: () =>
       node.parentId === 0 && node.menuType === 1

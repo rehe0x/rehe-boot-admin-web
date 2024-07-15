@@ -7,6 +7,7 @@ interface MenuTreeSelectProps {
   value?: any;
   onChange?: (value: any) => void;
   multiple?:boolean;
+  disabled?:boolean;
 }
 
 
@@ -23,7 +24,7 @@ export interface TreeObject extends DefaultOptionType{
 }
 
 
-export const MenuTreeSelect:React.FC<MenuTreeSelectProps> = ({ value, onChange,multiple=false }) => {
+export const MenuTreeSelect:React.FC<MenuTreeSelectProps> = ({ value, onChange,multiple=false,disabled = false }) => {
   const [treeData, setTreeData] = useState<TreeObject[]>([])
   const menuTypeOptions = [
     { label: "目录", value: 0 },
@@ -55,6 +56,7 @@ const transformItem = (item): TreeObject => {
 
   return (
     <TreeSelect
+    disabled={disabled}
     showSearch
     style={{ width: '100%' }}
     value={value === 0 ? undefined:value}

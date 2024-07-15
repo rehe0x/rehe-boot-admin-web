@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect,useLayoutEffect, useState } from 'react';
 
 interface PageTableData<T> {
   loading: boolean;
@@ -50,13 +50,21 @@ export const usePageTable = <T,>(
 
     setData((prevData):PageTableData<T> => ({
       ...prevData,
-      loading: false,
+      // loading: false,
       tableList: result.data,
       total: result.page.total || 0,
       pageSize,
       pageNum,
       formData:params
     }));
+
+    setTimeout(() => {
+      setData(prevData => ({
+        ...prevData,
+        loading: false,
+      }));
+    },300)
+    
   };
 
   useEffect(() => {
@@ -126,10 +134,17 @@ export const useTable = <T,>(
 
     setData((prevData):TableData<T> => ({
       ...prevData,
-      loading: false,
+      // loading: false,
       tableList: result.data,
       formData:params,
     }));
+
+    setTimeout(() => {
+      setData(prevData => ({
+        ...prevData,
+        loading: false,
+      }));
+    },300)
   };
 
   useEffect(() => {

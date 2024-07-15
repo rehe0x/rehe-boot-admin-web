@@ -18,5 +18,6 @@ export interface Menu {
 }
 
 export interface EditData{
-  id?:number
+  id?:number,
+  update?:boolean
 }
