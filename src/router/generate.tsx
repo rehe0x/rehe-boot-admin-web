@@ -15,6 +15,13 @@ export interface Menu {
   menuType: number;
   hidden?: number;
   permission?: string;
+  children?:Menu[],
+
+  key: string; // 菜单key
+  path:string; //路由路由path
+  parent_paths: string[]; //路由需要
+  parent_title: string[]; // 路由需要
+  
 }
 
 export interface MenuObject {
@@ -22,9 +29,7 @@ export interface MenuObject {
   label: string;
   children: MenuObject[] | null;
   icon: ReactElement | null;
-  menu_type: number;
-  parent_paths: string[];
-  parent_title: string[];
+  menu_type:number;
 }
 
 export interface RouteObject {
@@ -116,56 +121,33 @@ function pathToLazyComponent(filePath: string): ReactElement {
   );
 }
 
-// 获取菜单root节点
-function findMenuRoot(
-  nodeMap: Map<number, Menu>,
-  parentId: number,
-  path: string
-): { rootNode: Menu; path: string } {
-  const node = nodeMap.get(parentId);
-  if (!node) {
-    throw new Error("菜单数据异常！");
-  }
-  if (node.parentId === 0) {
-    return { rootNode: node, path };
-  }
-  return findMenuRoot(nodeMap, node.parentId, `${node.routePath}/${path}`);
-}
 
 // 菜单转路由对象
 function menuToRouteObject(
   node: Menu,
   children: RouteObject[],
-  menuObject: MenuObject
+  loaderData = {}
 ): RouteObject {
   return {
     id: node.id,
     element: pathToLazyComponent(node.component + ".tsx"),
     // element: <LazyComponentWrapper filePath={node.component + ".tsx"}/>,
     children,
-    loader: () =>
-      node.parentId === 0 && node.menuType === 1
-        ? { menus: menuObject.children }
-        : {
-            parentPaths: menuObject.parent_paths,
-            title: [...menuObject.parent_title, menuObject.label],
-          },
+    loader: () => loaderData
   };
 }
 
 // 菜单转对象
 function menuToMenuObject(node: Menu): MenuObject {
   return {
-    key: node.routePath,
+    key: node.key,
     label: node.title,
     children: null,
     icon:
       node.icon && icons[node.icon]
         ? React.createElement(icons[node.icon])
         : null,
-    menu_type: node.menuType,
-    parent_paths: [],
-    parent_title: [],
+    menu_type: node.menuType
   };
 }
 
@@ -174,88 +156,117 @@ function menuToMenuObject(node: Menu): MenuObject {
  */
 export function menuArrayToTreeMap(menus: Menu[]): {
   topMenuTree: MenuObject[];
-  menuTree: MenuObject[];
   routeTree: RouteObject[];
   permissions: string[];
 } {
   const menuMap: Map<number, Menu> = new Map(
     menus.map((node) => [node.id, node])
   );
-  const menuObjectMap: Map<number, MenuObject> = new Map(
-    menus.map((node) => [node.id, menuToMenuObject(node)])
-  );
-
+  //生成原始菜单树 和 权限
+  const menuRawTree: Menu[] = [];
   const permissions: string[] = [];
-  const menuTree: MenuObject[] = [];
-  const routesMap = new Map<number, RouteObject>();
-
-  menuMap.forEach((node) => {
-    // 生成菜单树结构 排除权限和隐藏
-    if (node.menuType !== 2 && (!node.hidden || node.hidden !== 1)) {
-      const menuObject = menuObjectMap.get(node.id)!;
-      if (node.parentId === 0) {
-        menuObject.key = menuObject.key === "/" ? "" : "/" + menuObject.key;
-        menuTree.push(menuObject);
-      } else {
-        const parent = menuObjectMap.get(node.parentId)!;
-        menuObject.key = parent.key + "/" + menuObject.key;
-        (parent.children || (parent.children = [])).push(menuObject);
-        menuObject.parent_paths = [...parent.parent_paths, parent.key];
-        menuObject.parent_title = [...parent.parent_title, parent.label];
-      }
-    }
-
-    // 生成权限
+  menuMap.forEach(node => {
     if (node.menuType === 2 && node.permission) {
       permissions.push(node.permission);
+      return;
     }
-
-    // 生成路由 最多两级（目录不生成路由）
-    if (node.menuType !== 1) return;
-    const routeObj = menuToRouteObject(node, [], menuObjectMap.get(node.id)!);
     if (node.parentId === 0) {
-      routeObj.path = node.routePath === "/" ? "/*" : node.routePath + `/*`;
-      routesMap.set(routeObj.id, routeObj);
+      menuRawTree.push(node)
     } else {
-      const { rootNode, path } = findMenuRoot(menuMap, node.parentId, "");
-      if (rootNode.menuType === 1) {
-        routeObj.path =
-          rootNode.routePath === "/"
-            ? "/*/" + path + node.routePath
-            : path + node.routePath;
-        const route = routesMap.get(rootNode.id);
-        if (route) {
-          route.children.push(routeObj);
+      const parentNode = menuMap.get(node.parentId);
+      parentNode && (parentNode.children || (parentNode.children = [])).push(node)
+    }
+  })
+
+  // 生成菜单和路由需要数据
+  const menuDataMap: Map<number, Menu> = new Map();
+  const initMenuData = (node:Menu,parentMenu?:Menu) => {
+    if(node.parentId === 0){
+      node.key = node.routePath === "/" ? "" : "/" + node.routePath;
+      node.path = node.menuType === 1 ? node.routePath === "/" ? "/*" : node.routePath + `/*` : node.routePath
+      node.parent_paths = []
+      node.parent_title = []
+    } else {
+      if(parentMenu){
+        node.key = parentMenu.key + "/" + node.routePath;
+        // 路由特殊处理
+        if(parentMenu.parentId === 0 && parentMenu.menuType === 1){
+          node.path = parentMenu.path==='/*' ? parentMenu.path + "/" +node.routePath : node.routePath
         } else {
-          const rootRouteObj = menuToRouteObject(
-            rootNode,
-            [routeObj],
-            menuObjectMap.get(rootNode.id)!
-          );
-          rootRouteObj.path =
-            rootNode.routePath === "/" ? "/*" : rootNode.routePath + `/*`;
-          routesMap.set(rootRouteObj.id, rootRouteObj);
+          node.path = parentMenu.path +"/"+ node.routePath;
         }
-      } else {
-        routeObj.path =
-          rootNode.routePath === "/"
-            ? rootNode.routePath + "*/" + path + node.routePath
-            : rootNode.routePath + "/" + path + node.routePath;
-        routesMap.set(routeObj.id, routeObj);
+        node.parent_paths = [...parentMenu.parent_paths, parentMenu.key];
+        node.parent_title = [...parentMenu.parent_title, parentMenu.title];
       }
     }
-  });
+    menuDataMap.set(node.id, {...node, children: []})
+    if(node.children){
+      node.children.forEach(child => initMenuData(child, node))
+    }
+  }
+  menuRawTree.forEach(node => initMenuData(node))
+
+  // 生成菜单MAP树
+  const menuTreeMap: Map<number, MenuObject> = new Map();
+  const initMenuTree = (node:Menu,parentMenu?:MenuObject) => {
+    const menuObject = menuToMenuObject(menuDataMap.get(node.id)!)
+    if(node.parentId === 0){
+      menuTreeMap.set(node.id, menuObject)
+    } else {
+      if(parentMenu){
+        (parentMenu.children || (parentMenu.children = [])).push(menuObject)
+      }
+    }
+    if(node.children){
+      node.children.forEach(child => initMenuTree(child, menuObject))
+    }
+  }
+  menuRawTree.forEach(node => initMenuTree(node))
+
+
+  //生成路由tree
+  const routesTreeMap = new Map<number, RouteObject>();
+  const initRouteTree = (node:Menu,topNode:Menu) => {
+    if(node.menuType === 1){
+      if(node.parentId === 0){
+        const menuObject = menuTreeMap.get(node.id)!
+        const routeObj = menuToRouteObject(node, [], {
+          menus: menuObject.children
+        });
+        routeObj.path =  node.path;
+        routesTreeMap.set(node.id, routeObj);
+      } else {
+        const menuData = menuDataMap.get(node.id)!
+        const routeObj = menuToRouteObject(node, [],  {
+          parentPaths: menuData.parent_paths,
+          title: [...menuData.parent_title, node.title],
+        });
+        routeObj.path =  node.path;
+        if(topNode.menuType === 1){
+            const route = routesTreeMap.get(topNode.id);
+          if (route) {
+            route.children.push(routeObj);
+          }
+        } else {
+          routesTreeMap.set(node.id, routeObj);
+        }
+      }
+    }
+    if(node.children){
+      node.children.forEach(child => initRouteTree(child, topNode))
+    }
+  }
+  menuRawTree.forEach(node => initRouteTree(node,node))
 
   // 生成顶部菜单
-  const topMenuTree = menuTree.map((element) => ({
+  const topMenuTree = Array.from(menuTreeMap.values()).map((element) => ({
     ...element,
     children: element.menu_type === 0 ? element.children : null,
   }));
 
   return {
     topMenuTree,
-    menuTree,
-    routeTree: Array.from(routesMap.values()),
+    routeTree: Array.from(routesTreeMap.values()),
     permissions,
   };
 }
