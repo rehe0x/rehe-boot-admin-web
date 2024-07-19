@@ -193,7 +193,7 @@ export function menuArrayToTreeMap(menus: Menu[]): {
         if(parentMenu.parentId === 0 && parentMenu.menuType === 1){
           node.path = parentMenu.path==='/*' ? parentMenu.path + "/" +node.routePath : node.routePath
         } else {
-          node.path = parentMenu.path +"/"+ node.routePath;
+          node.path =  parentMenu.path === '/' ? node.routePath : parentMenu.path +"/"+ node.routePath;
         }
         node.parent_paths = [...parentMenu.parent_paths, parentMenu.key];
         node.parent_title = [...parentMenu.parent_title, parentMenu.title];
