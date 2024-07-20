@@ -16,7 +16,7 @@ const App: React.FC<{menus:any[]}> = (props) => {
   };
 
   // 默认选中菜单
-  const pathname:string = useMatches().at(-1)?.pathname as string
+  const pathname:string = useMatches().at(0)?.pathname as string
   return (
     <ConfigProvider
       theme={{

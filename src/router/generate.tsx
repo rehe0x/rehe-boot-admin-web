@@ -182,21 +182,25 @@ export function menuArrayToTreeMap(menus: Menu[]): {
   const menuDataMap: Map<number, Menu> = new Map();
   const initMenuData = (node:Menu,parentMenu?:Menu) => {
     if(node.parentId === 0){
-      node.key = node.routePath === "/" ? "" : "/" + node.routePath;
-      node.path = node.menuType === 1 ? node.routePath === "/" ? "/*" : node.routePath + `/*` : node.routePath
-      node.parent_paths = []
-      node.parent_title = []
+      node.key = node.routePath !== '' ? '/' + node.routePath : node.routePath
+      node.path = node.routePath;
+      node.parent_paths = [node.key]
+      node.parent_title = [node.title]
     } else {
       if(parentMenu){
-        node.key = parentMenu.key + "/" + node.routePath;
+        //菜单key
+        node.key =node.routePath !== '' ? "/" + node.routePath : node.routePath;
+        if(parentMenu.key !== ''){
+          node.key = parentMenu.key + node.key
+        } 
         // 路由特殊处理
-        if(parentMenu.parentId === 0 && parentMenu.menuType === 1){
-          node.path = parentMenu.path==='/*' ? parentMenu.path + "/" +node.routePath : node.routePath
+        if(parentMenu.path !== '' && node.routePath !== '' && parentMenu.menuType === 0){
+          node.path = parentMenu.path +"/"+ node.routePath;
         } else {
-          node.path =  parentMenu.path === '/' ? node.routePath : parentMenu.path +"/"+ node.routePath;
+          node.path = node.routePath;
         }
-        node.parent_paths = [...parentMenu.parent_paths, parentMenu.key];
-        node.parent_title = [...parentMenu.parent_title, parentMenu.title];
+        node.parent_paths = [...parentMenu.parent_paths, node.key];
+        node.parent_title = [...parentMenu.parent_title, node.title];
       }
     }
     menuDataMap.set(node.id, {...node, children: []})
@@ -239,7 +243,7 @@ export function menuArrayToTreeMap(menus: Menu[]): {
         const menuData = menuDataMap.get(node.id)!
         const routeObj = menuToRouteObject(node, [],  {
           parentPaths: menuData.parent_paths,
-          title: [...menuData.parent_title, node.title],
+          title: menuData.parent_title,
         });
         routeObj.path =  node.path;
         if(topNode.menuType === 1){
