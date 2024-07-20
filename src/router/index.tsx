@@ -10,6 +10,12 @@ export const router = createBrowserRouter([
     }),
   },
   {
+    path: "/404",
+    lazy: async () => ({
+      Component: ((await import('@/pages/404/404')).default),
+    }),
+  },
+  {
     path: "/login",
     element: <Login />,
   },

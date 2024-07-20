@@ -213,6 +213,9 @@ export function menuArrayToTreeMap(menus: Menu[]): {
   // 生成菜单MAP树
   const menuTreeMap: Map<number, MenuObject> = new Map();
   const initMenuTree = (node:Menu,parentMenu?:MenuObject) => {
+    if(node.hidden) {
+      return;
+    }
     const menuObject = menuToMenuObject(menuDataMap.get(node.id)!)
     if(node.parentId === 0){
       menuTreeMap.set(node.id, menuObject)
@@ -235,7 +238,7 @@ export function menuArrayToTreeMap(menus: Menu[]): {
       if(node.parentId === 0){
         const menuObject = menuTreeMap.get(node.id)!
         const routeObj = menuToRouteObject(node, [], {
-          menus: menuObject.children
+          menus: menuObject && menuObject.children
         });
         routeObj.path =  node.path;
         routesTreeMap.set(node.id, routeObj);
