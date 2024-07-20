@@ -51,8 +51,9 @@ const EditModal: React.FC<EditModalProps> = ({
   const fetchMenu = async () => {
     if (isUpdate) {
       setLoading(true);
-      const result = await getMenuById(data.id!);
-      form.setFieldsValue(result.data);
+      const result = await getMenuById(data.id!);      
+      form.setFieldsValue({ ...result.data,routeDefault:result.data.routePath === '' });
+      setRouteDefault(result.data.routePath === '')
       setMenuTypeValue(result.data.menuType);
       setTimeout(() => {
         setLoading(false);

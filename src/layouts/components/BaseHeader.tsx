@@ -48,15 +48,15 @@ const themeItems:any = [
 const layoutItems = [
   {
     key: '1',
-    label: '默认',
+    label: '系统一',
   },
   {
     key: '2',
-    label: 'Top',
+    label: '系统二',
   },
   {
     key: '3',
-    label: 'Left',
+    label: '系统三',
   },
 ];
 

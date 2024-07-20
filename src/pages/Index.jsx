@@ -26,20 +26,11 @@ const App = () => {
  // 获取菜单
   useLayoutEffect(() => {
     (async () => {     
-
-      let menuUrl =
-      layoutMode == 2 ? '/api/user/getMenuTop' :
-      layoutMode == 3 ? '/api/user/getMenuLeft' :
-      '/api/user/getMenu';
-      const {data} = await request.get(menuUrl);
-
-      // const {data:{username}}  = await request.get('/api/user/info');
-
-      const {data: {username, menuList}} = await request.get("/api/v1/auth/info")
+      const platformId = layoutMode ? layoutMode : 1
+      const {data: {username, menuList}} = await request.get("/api/v1/auth/info?platformId="+platformId);
       console.log(menuList)
       // 生成菜单及路由
       const { topMenuTree, routeTree, permissions} = menuArrayToTreeMap(menuList);
-      console.log(routeTree)
       // 设置顶部菜单
       // @ts-ignore
       setTopMenuItem(topMenuTree)
