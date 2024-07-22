@@ -42,7 +42,10 @@ const App = () => {
         return <Tag color={color}>{text}</Tag>;
       },
     },
-
+    {
+      title: "排序",
+      dataIndex: "sort",
+    },
     {
       title: "路由",
       dataIndex: "routePath",

@@ -28,7 +28,6 @@ const App = () => {
     (async () => {     
       const platformId = layoutMode ? layoutMode : 1
       const {data: {username, menuList}} = await request.get("/api/v1/auth/info?platformId="+platformId);
-      console.log(menuList)
       // 生成菜单及路由
       const { topMenuTree, routeTree, permissions} = menuArrayToTreeMap(menuList);
       // 设置顶部菜单

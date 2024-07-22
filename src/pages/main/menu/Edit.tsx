@@ -51,9 +51,12 @@ const EditModal: React.FC<EditModalProps> = ({
   const fetchMenu = async () => {
     if (isUpdate) {
       setLoading(true);
-      const result = await getMenuById(data.id!);      
-      form.setFieldsValue({ ...result.data,routeDefault:result.data.routePath === '' });
-      setRouteDefault(result.data.routePath === '')
+      const result = await getMenuById(data.id!);
+      form.setFieldsValue({
+        ...result.data,
+        routeDefault: result.data.routePath === "",
+      });
+      setRouteDefault(result.data.routePath === "");
       setMenuTypeValue(result.data.menuType);
       setTimeout(() => {
         setLoading(false);
@@ -70,7 +73,7 @@ const EditModal: React.FC<EditModalProps> = ({
       if (isUpdate) {
         result = await updateMenu({ id: data.id, ...values });
       } else {
-        result = await createMenu({platformId:data.platformId ,...values});
+        result = await createMenu({ platformId: data.platformId, ...values });
       }
       if (result.successful) {
         handleSuccess();
@@ -111,6 +114,7 @@ const EditModal: React.FC<EditModalProps> = ({
     hidden: false,
     routeDefault: routeDefault,
     enabled: 1,
+    sort: 0,
   };
   return (
     <CustomFormModal
@@ -143,7 +147,10 @@ const EditModal: React.FC<EditModalProps> = ({
         </Form.Item>
 
         <Form.Item name="parentId" label="上级">
-          <MenuTreeSelect disabled={!!isUpdate || !!isCreate} platformId={data.platformId} />
+          <MenuTreeSelect
+            disabled={!!isUpdate || !!isCreate}
+            platformId={data.platformId}
+          />
         </Form.Item>
         <Form.Item
           name="title"
@@ -213,8 +220,19 @@ const EditModal: React.FC<EditModalProps> = ({
             <Input allowClear />
           </Form.Item>
         )}
-        <Form.Item name="hidden" label="隐藏">
-          <Switch />
+        <Form.Item label="排序">
+          <Flex gap="middle">
+            <Form.Item
+              name="sort"
+              rules={[{ required: true }]}
+              style={{ marginBottom: 0 }}
+            >
+              <InputNumber />
+            </Form.Item>
+            <Form.Item name="hidden" label="隐藏" style={{ marginBottom: 0 }}>
+              <Switch />
+            </Form.Item>
+          </Flex>
         </Form.Item>
       </Form>
     </CustomFormModal>
