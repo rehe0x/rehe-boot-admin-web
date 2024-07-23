@@ -132,7 +132,7 @@ const App:React.FC<{
     <Layout.Header
       style={{
         position: 'fixed',
-        zIndex: 1,
+        zIndex: 2,
         display: 'flex',
         width: '100%',
         padding: '0px 25px 0px 40px',

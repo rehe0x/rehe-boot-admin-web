@@ -1,5 +1,6 @@
 import { ConfigProvider, Skeleton } from 'antd';
 import React from 'react';
+import './Skeleton.css'
 
 export const BashSiderSkeleton:React.FC<{
   loading:boolean;
@@ -84,6 +85,7 @@ export const BashIndexSkeleton:React.FC<{
           paddingInline: '20px',
           marginTop: '85px'
         }}
+        // className='custom-skeleton'
         loading={props.loading}
         active
         title={false}

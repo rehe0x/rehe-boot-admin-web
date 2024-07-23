@@ -30,9 +30,7 @@ const App = () => {
       const {data: {username, menuList}} = await request.get("/api/v1/auth/info?platformId="+platformId);
       // 生成菜单及路由
       const { topMenuTree, routeTree, permissions} = menuArrayToTreeMap(menuList);
-      // 设置顶部菜单
-      // @ts-ignore
-      setTopMenuItem(topMenuTree)
+    
       // 设置用户信息
       setUserInfo({
         // @ts-ignore
@@ -47,7 +45,12 @@ const App = () => {
       router.navigate(`${location.pathname}`, { replace: true });
 
       // 适当延迟过度效果
-      setLoading(false)
+      setTimeout(()=>{
+        setLoading(false)
+         // 延时设置顶部菜单
+      // @ts-ignore
+        setTopMenuItem(topMenuTree)
+      },500)
     })();
   }, [layoutMode])
 

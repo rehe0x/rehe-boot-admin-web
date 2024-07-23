@@ -1,0 +1,22 @@
+/* MyComponent.css */
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.custom-skeleton {
+  animation: fadeInOut 1s infinite;
+}
