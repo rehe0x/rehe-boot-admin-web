@@ -1,43 +1,124 @@
-import React from 'react';
-import { LaptopOutlined, NotificationOutlined, UserOutlined } from '@ant-design/icons';
-import { Layout, Menu, theme, Space, Button, Dropdown, Spin, ConfigProvider, } from 'antd';
-import { DownOutlined, AlignLeftOutlined, BarChartOutlined } from '@ant-design/icons';
-
-import Table from '@/page/main/user/Table'
-import Select from '@/pages/main/user/Select'
+import React, { useState, useEffect} from "react";
+import {
+  Typography,
+  Layout,
+  Space,
+  Button,
+  Table,
+  Tag,
+  message,
+  Popconfirm,
+  TableColumnsType,
+  RadioChangeEvent,
+  Radio
+} from "antd";
+import {
+  PlusOutlined,
+} from "@ant-design/icons";
 import Breadcrumb from "@/components/Breadcrumb";
-
-const items = [
-  {
-    label: <a href="https://www.antgroup.com">1st menu item</a>,
-    key: '0',
-  },
-  {
-    label: <a href="https://www.aliyun.com">2nd menu item</a>,
-    key: '1',
-  },
-  {
-    type: 'divider',
-  },
-  {
-    label: '3rd menu item',
-    key: '3',
-  },
-];
+import { useTable } from "@/hooks/UseTable";
+import { Dept,EditData } from "./types";
+import { getDeptTree,deleteDept } from "./service";
+import Query from "./Query";
+import EditModal from "./Edit";
 
 const App = () => {
+  const columns: TableColumnsType<Dept> = [
+    {
+      title: "名称",
+      dataIndex: "name",
+      render: (_, record) => <a>{record.name}</a>
+    },
+   
+    {
+      title: "排序",
+      dataIndex: "sort",
+    },
+    {
+      title: "ID",
+      dataIndex: "id",
+    },
+    {
+      title: "操作",
+      key: "action",
+      width: "12%",
+      render: (_, record) => (
+        <Space size="middle">
+          <a onClick={(event) => handleEdit(event, { id: record.id })}>
+            <PlusOutlined />
+          </a>
+          <a
+            onClick={(event) =>
+              handleEdit(event, { id: record.id, update: true })
+            }
+          >
+            编辑
+          </a>
+          <Popconfirm
+            placement="left"
+            title="确认删除?"
+            description={<Typography.Text type="danger">同时会删除该部门的子部门！</Typography.Text>}
+            onConfirm={() => delDept(record.id)}
+            okText="确认"
+            cancelText="取消"
+          >
+            <a onClick={(e) => e.stopPropagation()}>删除</a>
+          </Popconfirm>
+        </Space>
+      ),
+    },
+  ];
+  const [tableProps, refresh, query, params] = useTable(getDeptTree);
+
+  const [editOpen, setEditOpen] = useState(false);
+  const [editData, setEditData] = useState<EditData>({});
+  const handleEdit = (event?: React.MouseEvent, data?: {id?:number, update?:boolean}) => {
+    event && event.stopPropagation();
+    const { id, update = false } = data ?? {};
+    setEditOpen(true);
+    setEditData((prev) => ({ ...prev, id, update}));
+  };
+
+  const delDept = async (id: number) => {
+    const result = await deleteDept(id);
+    if (result.successful) {
+      message.success("删除成功");
+      refresh();
+    }
+  };
 
   return (
-    <>
-      <Layout className='page-layout' >
-        <Breadcrumb />
+    <Layout className="page-layout">
+      <Breadcrumb />
 
-        <Layout.Content className='layout-content'>
-          部门管理
-        </Layout.Content>
+      <Layout.Content className="layout-content">
+        <Query query={query} />
+      </Layout.Content>
 
-      </Layout>
-    </>
+      <Layout.Content className="layout-content">
+        <div className="layout-title">
+          <Space size="small">
+            <Button type="primary" onClick={() => handleEdit()}>
+              创建
+            </Button>
+          </Space>
+        </div>
+
+        <Table
+          columns={columns}
+          rowKey={(record) => record.id}
+          expandable={{ expandRowByClick: true }}
+          rowSelection={{ checkStrictly: true }}
+          {...tableProps}
+        />
+      </Layout.Content>
+      <EditModal
+        open={editOpen}
+        setOpen={setEditOpen}
+        data={editData}
+        refresh={refresh}
+      />
+    </Layout>
   );
 };
 export default App;

@@ -96,7 +96,7 @@ const App = () => {
   const [editOpen, setEditOpen] = useState(false);
   const [editData, setEditData] = useState<EditData>({platformId: params.platformId});
 
-  const handleEdit = (event?: React.MouseEvent, data?: EditData) => {
+  const handleEdit = (event?: React.MouseEvent, data?: {id?:number, update?:boolean}) => {
     event && event.stopPropagation();
     const { id, update = false } = data ?? {};
     setEditOpen(true);
