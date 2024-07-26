@@ -22,6 +22,10 @@ export const customTheme = {
       activeBarHeight: 0,
       activeBarBorderWidth: 0,
       activeBarWidth: 0,
+    },
+    Tree:{
+      directoryNodeSelectedBg: '#f0f6ff',
+      directoryNodeSelectedColor:'inherit'
     }
   },
   cssVar: {

@@ -28,7 +28,6 @@ interface CombinedObject {
 }
 const DeptTreeSelect:React.FC<DeptTreeSelectProps> = ({ value, onChange,multiple=false }) => {
   const [treeData, setTreeData] = useState<TreeObject[]>([])
-
   useEffect(() => {
     (async() => {
       const result = await getDeptList()
@@ -60,7 +59,7 @@ const DeptTreeSelect:React.FC<DeptTreeSelectProps> = ({ value, onChange,multiple
     <TreeSelect
     showSearch
     style={{ width: '100%' }}
-    value={value === 0 ? undefined:value}
+    value={!value || value === 0 ? undefined:value}
     dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
     placeholder="部门"
     allowClear

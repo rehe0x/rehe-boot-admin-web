@@ -31,6 +31,7 @@ export const CustomFormModal: React.FC<CustomFormModalProps> = ({
 }) => {
   return (
     <Modal
+      forceRender
       loading={loading}
       open={open}
       title={title}

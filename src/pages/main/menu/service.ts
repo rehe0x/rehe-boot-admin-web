@@ -30,6 +30,7 @@ export const getMenuList = async (params?: Record<string, any>): R<Menu[]> => {
 export const getMenuTree = async (params?: Record<string, any>): R<Menu[]> => {
   const result = await getMenuList(params);
   
+  const menuIds = result.data?.map(item => item.id)
   const menuMap: Map<number, Menu> = new Map(result.data?.map((node: Menu) => [node.id, node]));
   const menuTree: Menu[] = [];
   menuMap.forEach((node) => {
@@ -43,6 +44,7 @@ export const getMenuTree = async (params?: Record<string, any>): R<Menu[]> => {
     }
   })
   result.data = menuTree;
+  result.menuIds = menuIds
   return result;
 }
 export const MenuService = {getMenuList}
