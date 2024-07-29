@@ -24,8 +24,14 @@ export const bindRoleMenu = async (params): R<any> => {
   return result;
 }
 
-export const getRoleList = async (params?: QueryParams): R<Role[]> => {
+export const queryRole = async (params?: QueryParams): R<Role[]> => {
   const result = await request.get('/api/v1/system/role/query', params);
+  return result;
+}
+
+
+export const queryRoleAll = async (): R<Role[]> => {
+  const result = await request.get('/api/v1/system/role/query/all');
   return result;
 }
 

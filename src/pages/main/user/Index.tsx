@@ -9,7 +9,7 @@ import { useTable,usePageTable } from '@/hooks/UseTable'
 
 import { User,EditData } from "./types";
 import Query from './Query'
-import { getUserList,deleteUser } from "./service";
+import { queryUser,deleteUser } from "./service";
 import EditModal from "./Edit";
 
 const items:MenuProps['items'] = [
@@ -83,7 +83,7 @@ const App = () => {
     },
   ];
 
-  const [tableProps, refresh, query] = usePageTable(getUserList)
+  const [tableProps, refresh, query] = usePageTable(queryUser)
   const [editOpen, setEditOpen] = useState(false);
   const [editData, setEditData] = useState<EditData>();
 

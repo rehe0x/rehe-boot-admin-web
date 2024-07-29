@@ -87,7 +87,7 @@ const App = () => {
 
   const [openAdd, setOpenAdd] = useState(false);
 
-  const{ tableProps,refresh,query }= useTable(UserService.getUserList)
+  const{ tableProps,refresh,query }= useTable(UserService.queryUser)
 
   
   return (

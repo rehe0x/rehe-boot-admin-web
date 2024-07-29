@@ -19,7 +19,7 @@ export const deleteUser = async (id:number): R<any> => {
 }
 
 
-export const getUserList = async (params?: QueryParams): R<User[]> => {
+export const queryUser = async (params?: QueryParams): R<User[]> => {
   const result = await request.get('/api/v1/system/user/query', params);
   return result;
 }

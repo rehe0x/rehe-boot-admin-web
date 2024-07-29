@@ -1,6 +1,6 @@
 import React,{ useEffect, useState} from 'react';
 import { TreeSelect } from 'antd';
-import { getDeptList } from "@/pages/main/dept/service";
+import { queryDept } from "@/pages/main/dept/service";
 import type { DefaultOptionType } from 'antd/es/select';
 
 interface DeptTreeSelectProps {
@@ -30,7 +30,7 @@ const DeptTreeSelect:React.FC<DeptTreeSelectProps> = ({ value, onChange,multiple
   const [treeData, setTreeData] = useState<TreeObject[]>([])
   useEffect(() => {
     (async() => {
-      const result = await getDeptList()
+      const result = await queryDept()
       const combinedMap: Map<number, CombinedObject> = new Map(result.data?.map((node: DeptObject) => [node.id, {
         dept: node,
         tree: {

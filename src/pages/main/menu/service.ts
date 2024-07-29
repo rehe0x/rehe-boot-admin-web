@@ -22,13 +22,13 @@ export const getMenuById = async (id:number): R<Menu> => {
   return result;
 }
 
-export const getMenuList = async (params?: Record<string, any>): R<Menu[]> => {
+export const queryMenu = async (params?: Record<string, any>): R<Menu[]> => {
   const result = await request.get('/api/v1/system/menu/query', params);
   return result;
 }
 
 export const getMenuTree = async (params?: Record<string, any>): R<Menu[]> => {
-  const result = await getMenuList(params);
+  const result = await queryMenu(params);
   
   const menuIds = result.data?.map(item => item.id)
   const menuMap: Map<number, Menu> = new Map(result.data?.map((node: Menu) => [node.id, node]));
@@ -47,4 +47,4 @@ export const getMenuTree = async (params?: Record<string, any>): R<Menu[]> => {
   result.menuIds = menuIds
   return result;
 }
-export const MenuService = {getMenuList}
+export const MenuService = {queryMenu}

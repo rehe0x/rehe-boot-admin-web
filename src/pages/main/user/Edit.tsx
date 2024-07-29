@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { message,Form, Input,InputNumber, Radio } from "antd";
 import CustomFormModal from "@/components/CustomFormModal";
 import DeptTreeSelect from "@/components/DeptTreeSelect";
+import RoleSelect from "@/components/RoleSelect";
 import { EditData } from "./types";
 import { getUserById, createUser, updateUser } from "./service";
 
@@ -118,6 +119,9 @@ const EditModal: React.FC<EditModalProps> = ({
         </Form.Item>
         <Form.Item name="deptId" label="部门">
           <DeptTreeSelect />
+        </Form.Item>
+        <Form.Item name="roleIds" label="角色">
+          <RoleSelect />
         </Form.Item>
         <Form.Item name="enabled" label=" ">
           <Radio.Group>

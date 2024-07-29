@@ -20,7 +20,7 @@ import { useTable, usePageTable } from "@/hooks/UseTable";
 
 import { Role, EditData } from "./types";
 import Query from "./Query";
-import { getRoleList, getRoleById, deleteRole, bindRoleMenu } from "./service";
+import { queryRole, getRoleById, deleteRole, bindRoleMenu } from "./service";
 import EditModal from "./Edit";
 import MenuTree from "./MenuTree";
 
@@ -101,7 +101,7 @@ const App = () => {
     },
   ];
 
-  const [tableProps, refresh, query] = usePageTable(getRoleList);
+  const [tableProps, refresh, query] = usePageTable(queryRole);
   const [editOpen, setEditOpen] = useState(false);
   const [editData, setEditData] = useState<EditData>();
   const [roleMenuIds, setRoleMenuIds] = useState<number[]>();

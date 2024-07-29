@@ -22,13 +22,13 @@ export const getDeptById = async (id:number): R<Dept> => {
   return result;
 }
 
-export const getDeptList = async (params?: Record<string, any>): R<Dept[]> => {
+export const queryDept = async (params?: Record<string, any>): R<Dept[]> => {
   const result = await request.get('/api/v1/system/dept/query', { } );
   return result;
 }
 
 export const getDeptTree = async (params?: Record<string, any>): R<Dept[]> => {
-  const result = await getDeptList(params);
+  const result = await queryDept(params);
 
   const deptMap: Map<number, Dept> = new Map(result.data?.map((node: Dept) => [node.id, node]));
   const deptTree: Dept[] = [];
