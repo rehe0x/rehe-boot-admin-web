@@ -219,4 +219,4 @@ const decrypt = (data: string) => {
 };
 
 
-export default {getStorage , setStorage}
+export default {getStorage , setStorage,removeStorage}

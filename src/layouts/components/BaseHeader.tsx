@@ -6,6 +6,8 @@ import { useAuth } from "@/stores/AuthContext";
 import { useApp } from "@/stores/AppContext";
 import NProgress from '@/components/NProgress';
 import { BaseHeaderSkeleton } from "@/layouts/components/Skeleton";
+import storage from "@/common/storage";
+
 import './BaseHeader.css'
 
 const themeItems:any = [
@@ -113,6 +115,7 @@ const App:React.FC<{
   const centerClick = ({ key }) => {
     if (key == 999) {
       navigate('/login')
+      storage.removeStorage('token')
       message.info(`退出成功`);
     } 
   };

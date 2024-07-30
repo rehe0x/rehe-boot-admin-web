@@ -7,11 +7,12 @@ const { stringify, parse } = qs;
 const checkStatus = (res: Response): Response => {
   if (res.status === 200) {
     return res;
+  } else if(res.status === 401){
+    window.location.replace('/login');
+    throw new Error(res.statusText);
+  } else {
+    throw new Error(res.statusText);
   }
-  message.error(`网络请求失败,${res.status}`);
-  const error = new Error(res.statusText);
-  (error as any).response = error;
-  throw error;
 };
 
 /**
@@ -21,11 +22,12 @@ const checkStatus = (res: Response): Response => {
  */
 const judgeOkState = async (res: Response): Promise<Response> => {
   const cloneRes = await res.clone().json();
-  
-  // TODO:可以在这里管控全局请求
-  if (!!cloneRes.code && cloneRes.code !== 200) {
-    message.error(`11${cloneRes.msg}${cloneRes.code}`);
+  if (cloneRes.code === undefined) {
+    throw new Error(res.statusText);
   }
+  if (cloneRes.code !== 0) {
+    message.error(`${cloneRes.msg}${cloneRes.code}`);
+  } 
   return res;
 };
 
@@ -34,13 +36,8 @@ const judgeOkState = async (res: Response): Promise<Response> => {
  * @param error
  */
 const handleError = (error: any): { code: number; data: any } => {
-  if (error instanceof TypeError) {
-    message.error(`网络请求失败啦！${error}`);
-  }
-  return {
-    code: -1,
-    data: error,
-  };
+  message.error(`请求失败啦！${error}`);
+  throw new Error(error);
 };
 
 interface Options extends RequestInit {
@@ -57,11 +54,10 @@ class http {
   static async bashFetch(url = '', options: Options = {}): Promise<any> {
     const token = storage.getStorage('token');
     const headers = new Headers();
-    headers.append('Authorization', '');
-    if (token) {
-      headers.append('token', token);
+    if(token){
+      headers.append('Authorization', 'Bearer '+token);
     }
-
+    
     const defaultOptions: RequestInit = {
       /*允许携带cookies*/
       credentials: 'include',

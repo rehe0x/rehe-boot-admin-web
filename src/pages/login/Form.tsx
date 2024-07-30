@@ -3,18 +3,23 @@ import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Form, Input } from 'antd';
 import { useNavigate } from "react-router-dom";
 import storage from "@/common/storage";
+import { loginPasswd } from "./service";
 
 const LoginFrom = () => {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate()
-  const onFinish = (values) => {
+  const onFinish = async (values) => {
     setLoading(true)
+    const result = await loginPasswd({username: values.username,password:values.password})
+    if(result.successful){
+      storage.setStorage('token',result.data.token)
+    } 
     setTimeout(() => {
-      storage.setStorage('token','123123')
+      result.successful && navigate('/')
       setLoading(false)
-      navigate('/')
     }, 1000);
+   
   };
 
  

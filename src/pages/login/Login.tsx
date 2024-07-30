@@ -10,6 +10,11 @@ import './Login.css'
 
 const Login = () => {
   const [width, setWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    storage.removeStorage('token')
+  },[])
+  
+
   // useEffect(() => {
   //   const handleWindowResize = () => setWidth(window.innerWidth);
 
