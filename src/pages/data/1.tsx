@@ -1,12 +1,11 @@
-import React, { useState ,useEffect} from 'react';
-import { Layout,  Space, Button, Dropdown, Table,Tag} from 'antd';
-import {  AlignLeftOutlined, BarChartOutlined } from '@ant-design/icons';
+import React from 'react';
+import { LaptopOutlined, NotificationOutlined, UserOutlined } from '@ant-design/icons';
+import { Layout, Menu, theme, Space, Button, Dropdown, Spin, ConfigProvider, } from 'antd';
+import { DownOutlined, AlignLeftOutlined, BarChartOutlined } from '@ant-design/icons';
 
+import Table from '@/page/main/user/Table'
+import Select from '@/pages/main/user/Select'
 import Breadcrumb from "@/components/Breadcrumb";
-import { useTable } from '@/hooks/UseTable'
-import Query from '@/pages/main/user/Query'
-import { UserService } from "@/pages/main/user/service";
-import { CollectionCreateFormModal } from "@/pages/main/user/Add";
 
 const items = [
   {
@@ -28,107 +27,17 @@ const items = [
 
 const App = () => {
 
-  const columns = [
-    {
-      title: 'ID',
-      dataIndex: 'id',
-    },
-    {
-      title: '名称',
-      dataIndex: 'name',
-      render: (text) => <a>{text}</a>,
-    },
-    {
-      title: '年龄',
-      dataIndex: 'age',
-    },
-    {
-      title: '地址',
-      dataIndex: 'address',
-    },
-    {
-      title: '地址1',
-      dataIndex: 'address',
-    },
-    {
-      title: '地址2',
-      dataIndex: 'address',
-    },
-    {
-      title: '标签',
-      dataIndex: 'tags',
-      render: (_, { tags }) => (
-        <>
-          {tags.map((tag) => {
-            let color = tag.length > 5 ? 'geekblue' : 'green';
-            if (tag === 'loser') {
-              color = 'volcano';
-            }
-            return (
-              <Tag color={color} key={tag}>
-                {tag.toUpperCase()}
-              </Tag>
-            );
-          })}
-        </>
-      ),
-    },
-    {
-      title: '操作',
-      key: 'action',
-      render: (_, record) => (
-        <Space size="middle">
-          <a onClick={() => refresh()}>编辑</a>
-          <a onClick={() => query({cehis:'123123',sd:'ff'})}>删除</a>
-        </Space>
-      ),
-    },
-  ];
-
-  const [openAdd, setOpenAdd] = useState(false);
-
-  const{ tableProps,refresh,query }= useTable(UserService.queryUser)
-
-  
   return (
-    <Layout className='page-layout' >
-      <Breadcrumb />
-      
-      <Layout.Content className='layout-content'>
-        <Query search={query} />
-      </Layout.Content>
+    <>
+      <Layout className='page-layout' >
+        <Breadcrumb />
 
-      {/* <Layout.Content className='layout-content'>
-        <Query search={search} />
-      </Layout.Content> */}
+        <Layout.Content className='layout-content'>
+          图表2
+        </Layout.Content>
 
-      <Layout.Content className='layout-content' >
-        <div className='layout-title'>
-          <Space size="small">
-            <Button type="primary" onClick={() => setOpenAdd(true)}>新增</Button>
-            <Button onClick={() => { form.resetFields(); }}>编辑</Button>
-          </Space>
-          <Space size="middle">
-            <Dropdown menu={{ items }} trigger={['click']}>
-              <a onClick={(e) => e.preventDefault()}>
-                <AlignLeftOutlined />
-              </a>
-            </Dropdown>
-            <Dropdown menu={{ items }} trigger={['click']}>
-              <a onClick={(e) => e.preventDefault()}>
-                <BarChartOutlined />
-              </a>
-            </Dropdown>
-          </Space>
-        </div>
-
-        <Table columns={columns} {...tableProps}/>
-      </Layout.Content>
-      <CollectionCreateFormModal
-        open={openAdd}
-        setOpenAdd={setOpenAdd}
-      />
-    </Layout>
+      </Layout>
+    </>
   );
 };
 export default App;
