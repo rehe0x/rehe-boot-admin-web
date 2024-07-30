@@ -111,7 +111,7 @@ const App:React.FC<{
     const result = await updateUserPlatform(e.key as number)
     if(result.successful){
       // navigate('')
-      window.location.replace('');
+      window.location.replace('/');
     }
     // setTimeout(()=>{
     //   setLayoutMode(e.key)
