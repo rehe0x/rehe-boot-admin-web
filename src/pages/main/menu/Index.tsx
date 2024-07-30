@@ -15,7 +15,7 @@ import {
 import {
   PlusOutlined,
 } from "@ant-design/icons";
-import Breadcrumb from "@/components/Breadcrumb";
+import { Permission,Breadcrumb } from "@/components";
 import { useTable } from "@/hooks/UseTable";
 import { Menu, EditData } from "./types";
 import { getMenuTree, deleteMenu } from "./service";
@@ -68,9 +68,12 @@ const App = () => {
       width: "12%",
       render: (_, record) => (
         <Space size="middle">
+          <Permission code={['menu:create']}>
           <a onClick={(event) => handleEdit(event, { id: record.id })}>
             <PlusOutlined />
           </a>
+          </Permission>
+          <Permission code={['menu:update']}>
           <a
             onClick={(event) =>
               handleEdit(event, { id: record.id, update: true })
@@ -78,6 +81,8 @@ const App = () => {
           >
             编辑
           </a>
+          </Permission>
+          <Permission code={['menu:delete']}>
           <Popconfirm
             placement="left"
             title="确认删除?"
@@ -88,6 +93,7 @@ const App = () => {
           >
             <a onClick={(e) => e.stopPropagation()}>删除</a>
           </Popconfirm>
+          </Permission>
         </Space>
       ),
     },
@@ -141,9 +147,11 @@ const App = () => {
           />
           </Space>
           <Space size="small">
+          <Permission code={['menu:create']}>
             <Button type="primary" onClick={() => handleEdit()}>
               创建
             </Button>
+            </Permission>
           </Space>
         </div>
 

@@ -3,8 +3,7 @@ import { message,Layout, Space, Button, Dropdown, Table, Tag } from 'antd';
 import { AlignLeftOutlined, BarChartOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Common } from '@/common';
-import { Permission } from "@/components/Permission";
-import Breadcrumb from "@/components/Breadcrumb";
+import { Permission,Breadcrumb } from "@/components";
 import { useTable,usePageTable } from '@/hooks/UseTable'
 
 import { User,EditData } from "./types";
@@ -74,10 +73,15 @@ const App = () => {
     {
       title: '操作',
       key: 'action',
+      width: "12%",
       render: (_, record) => (
         <Space size="middle">
-          <a onClick={() => handleEdit(record.id)}>编辑</a>
-          <a onClick={() => delUser(record.id)}>删除</a>
+          <Permission code={['user:update']}>
+            <a onClick={() => handleEdit(record.id)}>编辑</a>
+          </Permission>
+          <Permission code={['user:delete']}>
+            <a onClick={() => delUser(record.id)}>删除</a>
+          </Permission>
         </Space>
       ),
     },
@@ -108,7 +112,7 @@ const App = () => {
       <Layout.Content className='layout-content' >
         <div className='layout-title'>
           <Space size="small">
-            <Permission code={['user:add']}>
+            <Permission code={['user:create']}>
               <Button type="primary" onClick={() => handleEdit()}>创建</Button>
             </Permission>
             {/* <Button onClick={() => handleFormModal(1)}>编辑</Button> */}

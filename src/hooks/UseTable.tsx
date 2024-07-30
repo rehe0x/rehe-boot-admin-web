@@ -29,7 +29,7 @@ interface PageTableProps<T> {
 type UsePageTableResult<T> = [PageTableProps<T>, () => void, (formData: Record<string, any>) => void];
 
 export const usePageTable = <T,>(
-  fun: (params: { pageSize: number; pageNum: number,[key: string]: any }) => Promise<{ data: T[]; page: {total:number} }>)
+  fun: (params: { pageSize: number; pageNum: number,[key: string]: any }) => Promise<{ data: T[]; page: {total:number};successful:boolean }>)
 : UsePageTableResult<T> => {
   const [data, setData] = useState<PageTableData<T>>({
     loading: false,
@@ -47,17 +47,17 @@ export const usePageTable = <T,>(
     }));
 
     const result = await fun({ pageSize, pageNum ,...params});
-
-    setData((prevData):PageTableData<T> => ({
-      ...prevData,
-      // loading: false,
-      tableList: result.data,
-      total: result.page.total || 0,
-      pageSize,
-      pageNum,
-      formData:params
-    }));
-
+    if(result.successful){
+      setData((prevData):PageTableData<T> => ({
+        ...prevData,
+        // loading: false,
+        tableList: result.data,
+        total: result.page.total || 0,
+        pageSize,
+        pageNum,
+        formData:params
+      }));
+    }
     setTimeout(() => {
       setData(prevData => ({
         ...prevData,
@@ -116,7 +116,7 @@ interface TableProps<T> {
 type UseTableResult<T> = [TableProps<T>, () => void, (formData: Record<string, any>) => void, params:Record<string, any>];
 
 export const useTable = <T,>(
-  fun: (params: Record<string, any>) => Promise<{ data: T[] }>, defaultParams?:Record<string, any>)
+  fun: (params: Record<string, any>) => Promise<{ data: T[],successful:boolean}>, defaultParams?:Record<string, any>)
 : UseTableResult<T> => {
   const [data, setData] = useState<TableData<T>>({
     loading: false,
@@ -131,13 +131,15 @@ export const useTable = <T,>(
     }));
 
     const result = await fun({...data.formData,...params});
-
-    setData((prevData):TableData<T> => ({
-      ...prevData,
-      // loading: false,
-      tableList: result.data,
-      formData:{ ...prevData.formData,...params},
-    }));
+    if(result.successful){
+      setData((prevData):TableData<T> => ({
+        ...prevData,
+        // loading: false,
+        tableList: result.data,
+        formData:{ ...prevData.formData,...params},
+      }));
+    }
+   
 
     setTimeout(() => {
       setData(prevData => ({

@@ -12,6 +12,10 @@ export const updateUser = async (params): R<any> => {
   return result;
 }
 
+export const updateUserPlatform = async (platformId:number): R<any> => {
+  const result = await request.post(`/api/v1/system/user/update/platform/${platformId}`);
+  return result;
+}
 
 export const deleteUser = async (id:number): R<any> => {
   const result = await request.post(`/api/v1/system/user/delete/${id}`);
@@ -28,3 +32,4 @@ export const getUserById = async (id:number): R<User> => {
   const result = await request.get(`/api/v1/system/user/get/${id}`);
   return result;
 }
+

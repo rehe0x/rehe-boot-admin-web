@@ -15,7 +15,6 @@ import('@/styles/TableLayout.css')
 // 获取菜单创建路由
 const App = () => {
   const location = useLocation();
-  const { layoutMode } = useApp()
   const [loading, setLoading] = useState(true)
   const [userInfo, setUserInfo] = useState({
     permissions: [],
@@ -26,8 +25,8 @@ const App = () => {
  // 获取菜单
   useLayoutEffect(() => {
     (async () => {     
-      const platformId = layoutMode ? layoutMode : 1
-      const {data: {username, menuList}} = await request.get("/api/v1/auth/info?platformId="+platformId);
+      // const platformId = layoutMode ? layoutMode : 1
+      const {data: {username, menuList}} = await request.get("/api/v1/auth/info");
       // 生成菜单及路由
       const { topMenuTree, routeTree, permissions} = menuArrayToTreeMap(menuList);
     
@@ -52,7 +51,7 @@ const App = () => {
         setTopMenuItem(topMenuTree)
       },500)
     })();
-  }, [layoutMode])
+  }, [])
 
   return (
     <AuthContext.Provider

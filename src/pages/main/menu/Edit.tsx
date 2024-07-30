@@ -62,7 +62,10 @@ const EditModal: React.FC<EditModalProps> = ({
         setLoading(false);
       }, 200);
     }
-    isCreate && form.setFieldsValue({ parentId: data.id });
+    if(isCreate){
+      form.resetFields()
+      form.setFieldsValue({ parentId: data.id });
+    }
   };
 
   const handleSubmit = async () => {

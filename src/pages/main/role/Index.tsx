@@ -14,8 +14,7 @@ import {
 import { AlignLeftOutlined, BarChartOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Common } from "@/common";
-import { Permission } from "@/components/Permission";
-import Breadcrumb from "@/components/Breadcrumb";
+import { Permission,Breadcrumb } from "@/components";
 import { useTable, usePageTable } from "@/hooks/UseTable";
 
 import { Role, EditData } from "./types";
@@ -84,8 +83,10 @@ const App = () => {
       width: "12%",
       render: (_, record) => (
         <Space size="middle">
+          <Permission code={['role:update']}>
           <a onClick={(event) => handleEdit(event,record.id)}>编辑</a>
-
+          </Permission>
+          <Permission code={['role:delete']}>
           <Popconfirm
             placement="left"
             title="确认删除?"
@@ -96,6 +97,7 @@ const App = () => {
           >
             <a onClick={(e) => e.stopPropagation()}>删除</a>
           </Popconfirm>
+          </Permission>
         </Space>
       ),
     },
@@ -170,7 +172,7 @@ const App = () => {
         <Layout.Content className="layout-content" style={{flex: 1}}>
           <div className="layout-title">
             <Space size="small">
-              <Permission code={[]}>
+              <Permission code={['role:create']}>
                 <Button type="primary" onClick={() => handleEdit()}>
                   创建
                 </Button>
@@ -205,10 +207,12 @@ const App = () => {
         <Layout.Content className="layout-content" style={{width:'30%',marginLeft:'20px'}}>
           <div className="layout-title">
               <Typography.Title level={5} style={{margin: 0}}>菜单权限</Typography.Title>
+              <Permission code={['role:bind_menu']}>
               <Space size="middle">
                 <a onClick={() => selectMenuAll()}>全选</a>
                 <Button type="primary" onClick={() => handleBind()}>保存</Button>
               </Space>
+              </Permission>
           </div>
           <MenuTree onCheckChange={(value) => selectedMenuIds.current = value} menuIds={roleMenuIds} checkedStatus={menuCheckedStatus}/>
         </Layout.Content>

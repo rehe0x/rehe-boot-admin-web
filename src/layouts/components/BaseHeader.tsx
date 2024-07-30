@@ -8,6 +8,8 @@ import NProgress from '@/components/NProgress';
 import { BaseHeaderSkeleton } from "@/layouts/components/Skeleton";
 import storage from "@/common/storage";
 
+import { updateUserPlatform } from "@/pages/main/user/service";
+
 import './BaseHeader.css'
 
 const themeItems:any = [
@@ -105,11 +107,15 @@ const App:React.FC<{
   const themeClick = (e) => {
     setTheme(e.key)
   }
-  const layoutClick = (e) => {
-    navigate('')
-    setTimeout(()=>{
-      setLayoutMode(e.key)
-    },500)
+  const layoutClick = async(e) => {
+    const result = await updateUserPlatform(e.key as number)
+    if(result.successful){
+      // navigate('')
+      window.location.replace('');
+    }
+    // setTimeout(()=>{
+    //   setLayoutMode(e.key)
+    // },500)
   }
   // 个人中心
   const centerClick = ({ key }) => {

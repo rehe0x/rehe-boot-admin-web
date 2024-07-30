@@ -15,7 +15,7 @@ import {
 import {
   PlusOutlined,
 } from "@ant-design/icons";
-import Breadcrumb from "@/components/Breadcrumb";
+import { Permission,Breadcrumb } from "@/components";
 import { useTable } from "@/hooks/UseTable";
 import { Dept,EditData } from "./types";
 import { getDeptTree,deleteDept } from "./service";
@@ -44,9 +44,12 @@ const App = () => {
       width: "12%",
       render: (_, record) => (
         <Space size="middle">
+          <Permission code={['dept:create']}>
           <a onClick={(event) => handleEdit(event, { id: record.id })}>
             <PlusOutlined />
           </a>
+          </Permission>
+          <Permission code={['dept:update']}>
           <a
             onClick={(event) =>
               handleEdit(event, { id: record.id, update: true })
@@ -54,6 +57,8 @@ const App = () => {
           >
             编辑
           </a>
+          </Permission>
+          <Permission code={['dept:delete']}>
           <Popconfirm
             placement="left"
             title="确认删除?"
@@ -64,6 +69,7 @@ const App = () => {
           >
             <a onClick={(e) => e.stopPropagation()}>删除</a>
           </Popconfirm>
+          </Permission>
         </Space>
       ),
     },
@@ -98,9 +104,11 @@ const App = () => {
       <Layout.Content className="layout-content">
         <div className="layout-title">
           <Space size="small">
-            <Button type="primary" onClick={() => handleEdit()}>
-              创建
-            </Button>
+            <Permission code={['dept:create']}>
+              <Button type="primary" onClick={() => handleEdit()}>
+                创建
+              </Button>
+            </Permission>
           </Space>
         </div>
 
