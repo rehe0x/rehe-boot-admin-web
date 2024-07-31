@@ -1,10 +1,12 @@
 import React from 'react';
 import { Carousel } from 'antd';
-import a from "@/assets/img/1.jpg";
-import a1 from "@/assets/img/2.jpg";
-import a2 from "@/assets/img/3.png";
-import a3 from "@/assets/img/4.png";
+// import a from "@/assets/img/1.jpg";
+// import a1 from "@/assets/img/2.jpg";
+// import a2 from "@/assets/img/3.png";
+// import a3 from "@/assets/img/4.png";
 import a4 from "@/assets/img/6.jpg";
+// import a7 from "@/assets/img/7.png";
+// import a8 from "@/assets/img/8.png";
 
 
 // const imgs = [
@@ -15,7 +17,8 @@ import a4 from "@/assets/img/6.jpg";
 //   'src/assets/img/1.jpg',
 // ]
 
-const imgs = [a,a1,a2,a3,a4]
+// const imgs = [a,a1,a2,a3,a4]
+const imgs = [a4]
 
 let len = imgs.length, index; // index: 随机数
 for (let point = len - 1; point >= 0; point--) {
