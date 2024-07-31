@@ -100,7 +100,7 @@ window.setTimeout(() => {
 const App:React.FC<{
   topMenuItem:any[]
 }> = (props) => {
-  const { username } = useAuth()
+  const { username,nickname } = useAuth()
   const { setTheme,setLayoutMode } = useApp();
 
   // 修改 context 中的值
@@ -229,10 +229,10 @@ const App:React.FC<{
                     size={35}
                     gap={2}
                   >
-                    Lucy
+                    {username}
                   </Avatar>
                 </Badge>
-                {username}
+                {nickname}
                 <DownOutlined />
               </Space>
             </a>

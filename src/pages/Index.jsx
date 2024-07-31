@@ -18,7 +18,8 @@ const App = () => {
   const [loading, setLoading] = useState(true)
   const [userInfo, setUserInfo] = useState({
     permissions: [],
-    username: ''
+    username: '',
+    nickname: ''
   })
   
   const [topMenuItem, setTopMenuItem] = useState([]);
@@ -26,7 +27,7 @@ const App = () => {
   useLayoutEffect(() => {
     (async () => {     
       // const platformId = layoutMode ? layoutMode : 1
-      const {data: {username, menuList}} = await request.get("/api/v1/auth/info");
+      const {data: {username,nickname, menuList}} = await request.get("/api/v1/auth/info");
       // 生成菜单及路由
       const { topMenuTree, routeTree, permissions} = menuArrayToTreeMap(menuList);
     
@@ -34,7 +35,8 @@ const App = () => {
       setUserInfo({
         // @ts-ignore
         permissions: permissions,
-        username: username
+        username: username,
+        nickname:nickname
       })
 
       // 填充动态路由
