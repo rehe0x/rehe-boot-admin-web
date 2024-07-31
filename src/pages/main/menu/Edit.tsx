@@ -16,6 +16,7 @@ import CustomFormModal from "@/components/CustomFormModal";
 import MenuTreeSelect from "./MenuTreeSelect";
 import { EditData } from "./types";
 import { getMenuById, createMenu, updateMenu } from "./service";
+import Icon from "./Icon";
 
 interface EditModalProps {
   open: boolean;
@@ -237,6 +238,16 @@ const EditModal: React.FC<EditModalProps> = ({
             </Form.Item>
           </Flex>
         </Form.Item>
+
+        {menuTypeValue !== 2 && (
+          <Form.Item
+            name="icon"
+            label="图标"
+            help="ant design icon"
+          >
+            <Input allowClear />
+          </Form.Item>
+        )}
       </Form>
     </CustomFormModal>
   );

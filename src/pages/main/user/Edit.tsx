@@ -5,7 +5,6 @@ import DeptTreeSelect from "@/components/DeptTreeSelect";
 import RoleSelect from "@/components/RoleSelect";
 import { EditData } from "./types";
 import { getUserById, createUser, updateUser } from "./service";
-
 interface EditModalProps {
   open: boolean;
   setOpen: (open: boolean) => void;
