@@ -165,7 +165,7 @@ const App = () => {
   return (
     <Layout className="page-layout">
       <Breadcrumb />
-      <Layout.Content className="layout-content">
+      <Layout.Content className="layout-content query-padding">
         <Query query={query} />
       </Layout.Content>
       <div style={{display:'flex'}}>
