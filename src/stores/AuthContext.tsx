@@ -2,7 +2,8 @@ import { createContext,useContext }  from 'react';
 type AuthContextType = {
   permissions:string[],
   username:string,
-  nickname:string
+  nickname:string,
+  roleLevel:number | null
 }
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 

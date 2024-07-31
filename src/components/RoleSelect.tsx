@@ -1,9 +1,13 @@
 import React,{useEffect , useState} from 'react';
 import { Select, Space } from 'antd';
 import type { DefaultOptionType } from 'antd/es/select';
+import { useAuth } from "@/stores/AuthContext";
 import { queryRoleAll } from "@/pages/main/role/service";
 
 const App: React.FC<{value:any[],onChange:()=>void}> = ({value,onChange}) => {
+  const { roleLevel } = useAuth()
+  console.log(roleLevel)
+
   const [options, setOptions] = useState<DefaultOptionType[]>([])
   const loadData = async() => {
     const result = await queryRoleAll()
@@ -11,7 +15,8 @@ const App: React.FC<{value:any[],onChange:()=>void}> = ({value,onChange}) => {
       const roleOptions = result.data.map(item => ({
         label:item.name,
         value:item.id,
-        desc:item.description
+        desc:item.description,
+        disabled: roleLevel != null ? roleLevel === 0 ? false : !(item.level > roleLevel) : true
       }))
       setOptions(roleOptions)
     }

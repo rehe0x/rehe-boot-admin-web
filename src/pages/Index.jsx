@@ -19,7 +19,8 @@ const App = () => {
   const [userInfo, setUserInfo] = useState({
     permissions: [],
     username: '',
-    nickname: ''
+    nickname: '',
+    roleLevel:null,
   })
   
   const [topMenuItem, setTopMenuItem] = useState([]);
@@ -27,7 +28,7 @@ const App = () => {
   useLayoutEffect(() => {
     (async () => {     
       // const platformId = layoutMode ? layoutMode : 1
-      const {data: {username,nickname, menuList}} = await request.get("/api/v1/auth/info");
+      const {data: {username,nickname,roleLevel, menuList}} = await request.get("/api/v1/auth/info");
       // 生成菜单及路由
       const { topMenuTree, routeTree, permissions} = menuArrayToTreeMap(menuList);
     
@@ -36,7 +37,8 @@ const App = () => {
         // @ts-ignore
         permissions: permissions,
         username: username,
-        nickname:nickname
+        nickname:nickname,
+        roleLevel:roleLevel
       })
 
       // 填充动态路由
