@@ -19,6 +19,7 @@ export const App = () => {
   return (
     <AppContext.Provider
       value={{
+        theme: themeState.algorithm,
         setTheme: dispatch,
         layoutMode: layoutMode,
         setLayoutMode: (mode) => setLayoutMode(mode, setLayoutModeState)

@@ -1,6 +1,9 @@
 import React,{useRef, useEffect} from 'react';
 import * as echarts from 'echarts';
+import { useApp } from "@/stores/AppContext";
+
 const option = {
+  backgroundColor: "rgba(0,0,0,0)",
   color:[
     "#4169e7",
     "#6be6c1",
@@ -57,15 +60,27 @@ const option = {
 
 
 const App = ()=> {
-  const ref = useRef(null)
-  const initChart = ()=> {
-    const myChart = echarts.init(ref.current, '');
-    myChart.setOption(option);
-  }
-  
-  useEffect(()=>{
-    initChart()
-  },[])
+  const { theme } = useApp();
+  const ref = useRef<HTMLDivElement | null>(null);
+  const chartInstance = useRef<echarts.ECharts | null>(null);
+  const initChart = () => {
+    if (ref.current) {
+      if (chartInstance.current) {
+        chartInstance.current.dispose();
+      }
+      chartInstance.current = echarts.init(ref.current, theme);
+      chartInstance.current.setOption(option);
+    }
+  };
+  useEffect(() => {
+    initChart();
+    // 清理函数以销毁 ECharts 实例
+    return () => {
+      if (chartInstance.current) {
+        chartInstance.current.dispose();
+      }
+    };
+  }, [theme]);
   
   return(
     <div ref={ref} style={{width: '100%%', height: '280px' }}></div>
