@@ -70,7 +70,7 @@ const Login = () => {
                     textAlign: "center",
                   }}
                 >
-                  Lffe Admin 
+                  REHE ADMIN 
                 </Typography.Title>
                 <Typography.Title
                   level={5}
@@ -78,7 +78,7 @@ const Login = () => {
                     textAlign: "center",
                   }}
                 >
-                  Lffe Admin
+                  rehe admin
                 </Typography.Title>
               </div>
               <div>

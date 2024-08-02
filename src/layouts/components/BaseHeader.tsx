@@ -151,7 +151,7 @@ const App:React.FC<{
         WebkitBackdropFilter: 'blur(8px)',
       }}
     >
-      <div className="demo-logo">Admin Lffe</div>
+      <div style={{fontWeight: 'bold',fontSize:'28px',paddingInlineEnd:'40px'}}>REHE ADMIN</div>
       <ConfigProvider
         theme={{
           components: {
