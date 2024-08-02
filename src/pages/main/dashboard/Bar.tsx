@@ -23,7 +23,7 @@ const option = {
   xAxis: {
     type: "category",
     show: true,
-    data: ["Mon", "Tue", "Wed", "Thu", "Fri"],
+    data: ["Mon", "Tue", "Wed", "Thu", "Fri",'Fsd','Vld'],
   },
   yAxis: {
     type: "value",
@@ -40,7 +40,7 @@ const option = {
       emphasis: {
         focus: "series",
       },
-      data: [320, 302, 301, 334, 390],
+      data: [320, 302, 301, 334, 390,222,333],
     },
     {
       name: "Mail Ad",
@@ -52,7 +52,7 @@ const option = {
       emphasis: {
         focus: "series",
       },
-      data: [120, 132, 101, 134, 90],
+      data: [120, 132, 101, 134, 90,133,222],
     },
     {
       name: "Affiliate Ad",
@@ -64,7 +64,7 @@ const option = {
       emphasis: {
         focus: "series",
       },
-      data: [220, 182, 191, 234, 290],
+      data: [220, 182, 191, 234, 290,133,111],
     },
   ],
 };

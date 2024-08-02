@@ -24,6 +24,7 @@ const  option = {
   legend: {},
   grid: {
     left: '3%',
+    top: '15%',
     right: '4%',
     bottom: '3%',
     containLabel: true
@@ -34,18 +35,18 @@ const  option = {
   },
   yAxis: {
     type: 'category',
-    data: ['Brazil', 'Indonesia', 'USA', 'India', 'China', 'World']
+    data: [ 'USA', 'India', 'China', 'World']
   },
   series: [
     {
       name: '2011',
       type: 'bar',
-      data: [18203, 23489, 29034, 104970, 131744, 630230]
+      data: [29034, 104970, 131744, 630230]
     },
     {
       name: '2012',
       type: 'bar',
-      data: [19325, 23438, 31000, 121594, 134141, 681807]
+      data: [31000, 121594, 134141, 681807]
     }
   ]
 };
