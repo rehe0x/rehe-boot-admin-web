@@ -85,7 +85,7 @@ const EditModal: React.FC<EditModalProps> = ({
         <Form.Item
           name="label"
           label="字典标题"
-          rules={[{ required: true, type: "string", min: 2, max: 20 }]}
+          rules={[{ required: true, type: "string", min: 1, max: 20 }]}
         >
           <Input allowClear />
         </Form.Item>
@@ -93,7 +93,7 @@ const EditModal: React.FC<EditModalProps> = ({
         <Form.Item
           name="value"
           label="字典值"
-          rules={[{ required: true, type: "string", min: 2, max: 20 }]}
+          rules={[{ required: true, type: "string", min: 1, max: 20 }]}
         >
           <Input allowClear />
         </Form.Item>
