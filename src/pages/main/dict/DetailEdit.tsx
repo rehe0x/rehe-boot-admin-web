@@ -74,7 +74,7 @@ const EditModal: React.FC<EditModalProps> = ({
     >
       <Form
         form={form}
-        name="form_in_modal"
+        name="form_in_modal2"
         labelCol={{ span: 5 }}
         wrapperCol={{ span: 18 }}
         initialValues={initialValues}

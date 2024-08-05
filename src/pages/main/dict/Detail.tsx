@@ -21,8 +21,13 @@ import { Dict,DictDetail, DetailEditData } from "./types";
 import { queryDict, queryDictDetail, deleteDict, deleteDictDetail } from "./service";
 import DetailEditModal from "./DetailEdit";
 
-const App:React.FC<{dictId?:number}> = ({dictId}) => {
+const App:React.FC<{dictId?:number,dictName?:string}> = ({dictId,dictName}) => {
   const columns = [
+    {
+      title: "所属字典",
+      dataIndex: "dictId",
+      render: () => <a>{dictName}</a>,
+    },
     {
       title: "ID",
       dataIndex: "id",

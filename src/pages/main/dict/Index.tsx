@@ -86,9 +86,13 @@ const App = () => {
   const [editOpen, setEditOpen] = useState(false);
   const [editData, setEditData] = useState<EditData>();
   const [selectedDictId, setSelectedDictId] = useState<number>();
+  const [selectedDictName, setSelectedDictName] = useState<String>();
 
   useEffect(() => {
-    tableProps.dataSource.length > 0 && setSelectedDictId(tableProps.dataSource[0].id)
+    if(tableProps.dataSource.length > 0) {
+      setSelectedDictId(tableProps.dataSource[0].id)
+      setSelectedDictName(tableProps.dataSource[0].code)
+    }
   },[tableProps.dataSource])
   
   const handleEdit = (event?: React.MouseEvent,data?: EditData) => {
@@ -105,14 +109,16 @@ const App = () => {
     }
   };
 
-  const rowSelectionChange = (selectedRowKeys) => {
-    setSelectedDictId(selectedRowKeys[0]);
+  const rowSelectionChange = (selectedKeys,selectedRows) => {
+    setSelectedDictName(selectedRows[0].code)
+    setSelectedDictId(selectedKeys[0]);
   }
 
   const onRow = (record) => ({
     onClick: () => {
       const selectedKey = record.id;
       setSelectedDictId(selectedKey);
+      setSelectedDictName(record.code)
     },
   });
 
@@ -155,7 +161,7 @@ const App = () => {
             rowKey={(record) => record.id}
           />
         </Layout.Content>
-        <Detail dictId={selectedDictId}/>
+        <Detail dictId={selectedDictId} dictName={selectedDictName}/>
       </div>
 
       <EditModal
