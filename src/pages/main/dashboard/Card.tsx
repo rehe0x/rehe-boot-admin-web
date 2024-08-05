@@ -6,7 +6,7 @@ import { useApp } from "@/stores/AppContext";
 const App: React.FC = () => (
   <Row gutter={24}>
     <Col span={4}>
-      <Card bordered={false}>
+      <Card bordered={false} style={{backgroundColor: '#e8faea'}}>
         <Statistic
           title="Active"
           value={11.28}
@@ -18,7 +18,7 @@ const App: React.FC = () => (
       </Card>
     </Col>
     <Col span={4}>
-      <Card bordered={false}>
+      <Card bordered={false} style={{backgroundColor: '#e7e1fb'}}>
         <Statistic
           title="Idle"
           value={9.3}
@@ -30,7 +30,7 @@ const App: React.FC = () => (
       </Card>
     </Col>
     <Col span={4}>
-      <Card bordered={false}>
+      <Card bordered={false} style={{backgroundColor: '#f0f5fb'}}>
         <Statistic
           title="Active"
           value={11.28}
@@ -42,7 +42,7 @@ const App: React.FC = () => (
       </Card>
     </Col>
     <Col span={4}>
-      <Card bordered={false}>
+      <Card bordered={false} style={{backgroundColor: '#e8faea'}}>
         <Statistic
           title="Idle"
           value={9.3}
@@ -54,7 +54,7 @@ const App: React.FC = () => (
       </Card>
     </Col>
     <Col span={4}>
-      <Card bordered={false}>
+      <Card bordered={false} style={{backgroundColor: '#e7e1fb'}}>
         <Statistic
           title="Active"
           value={11.28}
@@ -66,7 +66,7 @@ const App: React.FC = () => (
       </Card>
     </Col>
     <Col span={4}>
-      <Card bordered={false}>
+      <Card bordered={false} style={{backgroundColor: '#f0f5fb'}}>
         <Statistic
           title="Idle"
           value={9.3}

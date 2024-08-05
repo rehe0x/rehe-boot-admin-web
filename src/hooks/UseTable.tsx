@@ -129,9 +129,8 @@ export const useTable = <T,>(
       ...prevData,
       loading: true,
     }));
-
     const result = await fun({...data.formData,...params});
-    if(result.successful){
+    if(result && result.successful){
       setData((prevData):TableData<T> => ({
         ...prevData,
         // loading: false,
