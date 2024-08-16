@@ -52,10 +52,12 @@ class http {
    * @returns {Promise<unknown>}
    */
   static async bashFetch(url = '', options: Options = {}): Promise<any> {
-    const token = storage.getStorage('token');
     const headers = new Headers();
-    if(token){
-      headers.append('Authorization', 'Bearer '+token);
+    if(!options['Authorization']){
+      const token = storage.getStorage('token');
+      if(token){
+        headers.append('Authorization', 'Bearer '+token);
+      }
     }
     
     const defaultOptions: RequestInit = {
@@ -66,9 +68,12 @@ class http {
       headers: headers,
     };
 
-    if (options.method === 'POST' || options.method === 'PUT') {
-      headers.append('Content-Type', 'application/json; charset=utf-8');
+    if(options.type !== 'FormData'){
+      if (options.method === 'POST' || options.method === 'PUT') {
+        headers.append('Content-Type', 'application/json; charset=utf-8');
+      }
     }
+   
 
     const newOptions: RequestInit = { ...defaultOptions, ...options, headers };
     return fetch(url, newOptions)
@@ -85,17 +90,17 @@ class http {
    */
   post(url: string, params: Record<string, any> = {}, option: Options = {}): Promise<any> {
     const options = Object.assign({ method: 'POST' }, option);
-    //一般我们常用场景用的是json，所以需要在headers加Content-Type类型
-    options.body = JSON.stringify(params);
-
     //可以是上传键值对形式，也可以是文件，使用append创造键值对数据
     if (options.type === 'FormData' && options.body !== 'undefined') {
       const formData = new FormData();
-      const body = JSON.parse(options.body as string);
-      for (const key of Object.keys(body)) {
-        formData.append(key, body[key]);
+      // const body = JSON.parse(options.body as string);
+      for (const key of Object.keys(params)) {
+        formData.append(key, params[key]);
       }
       options.body = formData;
+    } else {
+      //一般我们常用场景用的是json，所以需要在headers加Content-Type类型
+      options.body = JSON.stringify(params);
     }
     return http.bashFetch(url, options); //类的静态方法只能通过类本身调用
   }
