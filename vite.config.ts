@@ -10,6 +10,17 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   },
+  build: {
+    target: 'esnext'  // 设置目标为 esnext 以支持顶层 await
+  },
+  worker: {
+    format: 'es',  // 配置 Worker 输出格式为 es
+    rollupOptions: {
+      output: {
+        format: 'es'  // 如果需要，可以单独为 Worker 指定输出格式
+      }
+    }
+  },
   server: {
     proxy: {
       // 代理所有 /api 请求
