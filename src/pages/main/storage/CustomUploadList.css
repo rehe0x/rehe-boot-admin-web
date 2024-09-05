@@ -1,0 +1,12 @@
+.custom-upload-list .custom-upload-list-item {
+  display: flex;
+  align-items: center;
+  /* justify-content: space-between; */
+}
+ .custom-upload-list .custom-upload-list-item:hover {
+  background-color: var(--ant-control-item-bg-hover)
+}
+
+.custom-upload-list > div:not(:first-child) {
+  margin-top: 10px; /* 这将为除第一个元素之外的所有元素添加 margin-top */
+}

@@ -9,7 +9,7 @@ import { BaseHeaderSkeleton } from "@/layouts/components/Skeleton";
 import storage from "@/common/storage";
 
 import { updateUserPlatform } from "@/pages/main/user/service";
-
+import { WorkerTask } from "@/components/WorkerTask";
 import './BaseHeader.css'
 
 const themeItems:any = [
@@ -197,7 +197,7 @@ const App:React.FC<{
         }} >
 
         <Space size="large">
-        
+          <WorkerTask />
           <Dropdown className="header-select" menu={{ items: themeItems , onClick: themeClick }} placement="bottom" arrow={{ pointAtCenter: true }}>
             <a style={{ fontSize: '18px' }} onClick={(e) => e.preventDefault()}>
               <MoonOutlined />

@@ -29,5 +29,10 @@ export const checkMultipartUpload = async (params?: Record<string, any>,option: 
   return result;
 }
 
+export const queryStorage = async (params?: Record<string, any>): R<any[]> => {
+  const result = await request.get('/api/v1/storage/list', params);
+  return result;
+}
+
 
 export const StorageService = {createMultipartUpload}

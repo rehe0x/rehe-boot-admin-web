@@ -4,14 +4,27 @@ import storage from "@/common/storage";
 
 const { stringify, parse } = qs;
 
+// 判断是否在 Web Worker 中
+const isWorker = ():boolean => {
+  return typeof self !== 'undefined' && self.constructor.name === 'DedicatedWorkerGlobalScope';
+}
+
+const h_error = (msg) => {
+  if(isWorker()){
+    self.postMessage({ type: 'error', message: msg });
+  } else {
+    throw new Error(msg);
+  }
+}
+
 const checkStatus = (res: Response): Response => {
   if (res.status === 200) {
     return res;
   } else if(res.status === 401){
-    window.location.replace('/login');
-    throw new Error(res.statusText);
+    !isWorker() && window.location.replace('/login');
+    h_error(res.statusText)
   } else {
-    throw new Error(res.statusText);
+    h_error(res.statusText)
   }
 };
 
@@ -23,10 +36,10 @@ const checkStatus = (res: Response): Response => {
 const judgeOkState = async (res: Response): Promise<Response> => {
   const cloneRes = await res.clone().json();
   if (cloneRes.code === undefined) {
-    throw new Error(res.statusText);
+    h_error(res.statusText)
   }
   if (cloneRes.code !== 0) {
-    message.error(`${cloneRes.msg}${cloneRes.code}`);
+    !isWorker() && message.error(`${cloneRes.msg}${cloneRes.code}`);
   } 
   return res;
 };
@@ -36,8 +49,8 @@ const judgeOkState = async (res: Response): Promise<Response> => {
  * @param error
  */
 const handleError = (error: any): { code: number; data: any } => {
-  message.error(`请求失败啦！${error}`);
-  throw new Error(error);
+  !isWorker() && message.error(`请求失败啦！${error.message}`);
+  h_error(error.message)
 };
 
 interface Options extends RequestInit {
@@ -45,6 +58,7 @@ interface Options extends RequestInit {
 }
 
 class http {
+
   /**
    * 静态的fetch请求通用方法
    * @param url

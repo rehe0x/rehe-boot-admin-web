@@ -9,34 +9,39 @@ export default class IndexedDB {
   private constructor(dbName: string, storeName: string) {
       this.dbName = dbName;
       this.storeName = storeName;
-      this.init();
+    //   this.init();
   }
 
-  public static getInstance(dbName: string, storeName: string): IndexedDB {
+  public static async getInstance(dbName: string, storeName: string) {
       const key = `${dbName}-${storeName}`;
       if (!IndexedDB.instances.has(key)) {
-        IndexedDB.instances.set(key, new IndexedDB(dbName, storeName));
+        const i = new IndexedDB(dbName, storeName)
+        await i.init()
+        IndexedDB.instances.set(key, i);
       }
       return IndexedDB.instances.get(key)!;
   }
 
-  private init(): void {
-      const request = indexedDB.open(this.dbName);
-
-      request.onupgradeneeded = (event: IDBVersionChangeEvent) => {
-          const db = (event.target as IDBOpenDBRequest).result;
-          if (!db.objectStoreNames.contains(this.storeName)) {
-              db.createObjectStore(this.storeName, { keyPath: 'id', autoIncrement: true });
-          }
-      };
-
-      request.onsuccess = () => {
-          this.db = request.result;
-      };
-
-      request.onerror = (event: Event) => {
-          console.error('Database error:', (event.target as IDBOpenDBRequest).error);
-      };
+  private async init(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+        const request = indexedDB.open(this.dbName);
+        request.onupgradeneeded = (event: IDBVersionChangeEvent) => {
+            const db = (event.target as IDBOpenDBRequest).result;
+            if (!db.objectStoreNames.contains(this.storeName)) {
+                db.createObjectStore(this.storeName, { keyPath: 'id', autoIncrement: true });
+            }
+        };
+  
+        request.onsuccess = () => {
+            this.db = request.result;
+            resolve();
+        };
+  
+        request.onerror = (event: Event) => {
+            console.error('Database error:', (event.target as IDBOpenDBRequest).error);
+            reject()
+        };
+    });
   }
 
   public async put(data: any): Promise<void> {
