@@ -64,8 +64,8 @@ const CustomUpload: React.FC<{}> = ({}) => {
         style={{ display: "none" }}
         onChange={handleFileChange}
       />
-
-      <Space size="small">
+    
+      <Space size="small" style={{marginBottom: '15px'}}>
         <Button
           type="primary"
           icon={<UploadOutlined />}
