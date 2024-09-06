@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Popover } from "antd";
+import { Button, Popover, Empty } from "antd";
 import {
   DownOutlined,
   SunOutlined,
@@ -16,7 +16,15 @@ export const WorkerTask: React.FC<{}> = () => {
       placement="bottomRight"
       content={
         <div style={{ width: "500px" }}>
-          <CustomUploadList fileList={fileList} onStatus={onStatus} onDelete={onDelete}/>
+          {fileList.length > 0 ? (
+            <CustomUploadList
+              fileList={fileList}
+              onStatus={onStatus}
+              onDelete={onDelete}
+            />
+          ) : (
+            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+          )}
         </div>
       }
       title="WorkerTask"
@@ -24,7 +32,9 @@ export const WorkerTask: React.FC<{}> = () => {
       arrow={{ pointAtCenter: true }}
     >
       <a style={{ fontSize: "18px" }} onClick={(e) => e.preventDefault()}>
-        <SyncOutlined spin={fileList.some(item => item.status.includes('uploading'))} />
+        <SyncOutlined
+          spin={fileList.some((item) => item.status.includes("uploading"))}
+        />
       </a>
     </Popover>
   );
