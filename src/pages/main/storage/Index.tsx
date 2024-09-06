@@ -146,6 +146,9 @@ const Storage: React.FC<{}> = () => {
         ...prev,
         { name: record.name, key: record.name, folder: false },
       ]);
+    } else {
+       // 打开新的窗口
+      window.open(record.url, '_blank', 'noopener,noreferrer');
     }
   };
 
