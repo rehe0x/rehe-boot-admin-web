@@ -44,5 +44,10 @@ export const deleteFolder = async (params?: Record<string, any>): R<any> => {
   return result;
 }
 
+export const renameFolder = async (params?: Record<string, any>): R<any> => {
+  const result = await request.post('/api/v1/storage/folder/rename', params);
+  return result;
+}
+
 
 export const StorageService = {createMultipartUpload}
