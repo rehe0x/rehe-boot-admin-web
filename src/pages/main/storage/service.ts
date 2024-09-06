@@ -34,5 +34,15 @@ export const queryStorage = async (params?: Record<string, any>): R<any[]> => {
   return result;
 }
 
+export const createFolder = async (params?: Record<string, any>): R<any> => {
+  const result = await request.post('/api/v1/storage/folder/create', params);
+  return result;
+}
+
+export const deleteFolder = async (params?: Record<string, any>): R<any> => {
+  const result = await request.post('/api/v1/storage/folder/delete', params);
+  return result;
+}
+
 
 export const StorageService = {createMultipartUpload}

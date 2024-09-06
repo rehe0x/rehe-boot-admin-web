@@ -20,11 +20,13 @@ import messageManager from "@/common/message_manager";
 
 const storageDB = await IndexedDB.getInstance("DB1", "file");
 
-const CustomUpload: React.FC<{}> = ({}) => {
+const CustomUpload: React.FC<{paths:string}> = ({paths}) => {
   const [fileList, onStatus, onDelete] = useUploadList();
 
   const inputRef = useRef(null);
   const handleFileChange = async (event) => {
+    // const path = paths.splice(1).map(item => item.name).join('/')
+    const path = paths ? paths: '/'
     const file = event.target.files?.[0];
     const fileName = file.name;
     const fileType = file.type;
@@ -32,6 +34,7 @@ const CustomUpload: React.FC<{}> = ({}) => {
 
     const result = await createMultipartUpload({
       key: fileName,
+      path,
       contentType: fileType,
     });
     if (!result.successful) {
@@ -41,6 +44,7 @@ const CustomUpload: React.FC<{}> = ({}) => {
     const fileId = await storageDB.add({
       uploadId: result.data,
       fileName: fileName,
+      path,
       file: file,
       status: 'uploading'
     });
@@ -49,6 +53,7 @@ const CustomUpload: React.FC<{}> = ({}) => {
       name: 'upload',
       data:{
         file: file,
+        path,
         uploadId: result.data,
         id: fileId,
         jwt: storage.getStorage("token"),

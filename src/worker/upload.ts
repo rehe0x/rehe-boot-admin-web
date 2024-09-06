@@ -28,6 +28,7 @@ export const  fileUploadStart = async (worker,fileData?) => {
   for (const element of fileList) {
     const result  = await checkMultipartUpload({
       key: element.fileName,
+      path:element.path,
       uploadId: element.uploadId,
     })
     if (result.successful && result.data) {
@@ -35,6 +36,7 @@ export const  fileUploadStart = async (worker,fileData?) => {
         name: 'upload',
         data: {
           file: element.file,
+          path: element.path,
           uploadId: element.uploadId,
           id: element.id,
           jwt: storage.getStorage("token"),
@@ -53,7 +55,7 @@ export const pauseUpload = (fileId) => {
   uploadState.status = 'pause'
 }
 
-export const fileUpload =async (file, uploadId, fileId, status, jwt) => {
+export const fileUpload =async (file, path, uploadId, fileId, status, jwt) => {
   const fileName = file.name;
   const fileType = file.type;
   const fileSzie = file.size;
@@ -69,6 +71,7 @@ export const fileUpload =async (file, uploadId, fileId, status, jwt) => {
 
   const checkPartResult = await checkObjectPartList({
     key: fileName,
+    path,
     uploadId: uploadId,
     detailList: partDetailList,
   },
@@ -135,6 +138,7 @@ export const fileUpload =async (file, uploadId, fileId, status, jwt) => {
 
     const uploadPartResult = await uploadPart({
       file: part.chunk,
+      path,
       uploadId: uploadId,
       partNumber: item.partNumber,
       md5hex: partMd5hex,
@@ -172,6 +176,7 @@ export const fileUpload =async (file, uploadId, fileId, status, jwt) => {
   if(uploadStateMap.get(fileId).status === 'uploading'){
     const completeResult = await completeMultipartUpload({
       key: fileName,
+      path,
       uploadId: uploadId,
       detailList: completePartList,
     },jwt);

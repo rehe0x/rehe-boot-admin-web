@@ -4,6 +4,10 @@ import {
   Space,
   Button,
   Table,
+  Modal,
+  Input,
+  Popconfirm,
+  Typography
 } from "antd";
 import {
   UploadOutlined,
@@ -15,7 +19,7 @@ import { Permission, Breadcrumb } from "@/components";
 import { formatBytes } from "@/common";
 import { useTable } from "@/hooks/UseTable";
 
-import { queryStorage } from "./service";
+import { queryStorage,createFolder,deleteFolder } from "./service";
 import CustomUpload from "./CustomUpload";
 
 const Storage: React.FC<{}> = () => {
@@ -50,19 +54,33 @@ const Storage: React.FC<{}> = () => {
       title: "Action",
       key: "action",
       render: (_, record) => (
+        <Popconfirm
+          placement="left"
+          title="确认删除?"
+          description={<Typography.Text type="danger">同时会删除该文件夹下面的所有文件及文件夹！</Typography.Text>}
+          onConfirm={() => handleDelete(record.name)}
+          okText="确认"
+          cancelText="取消"
+      >
         <Button
           style={{height: 0}}
           type="link"
           icon={<DeleteOutlined />}
-          onClick={() => handleDelete(record.key)}
+          onClick={(e) => e.stopPropagation()}
         />
+      </Popconfirm>
+      
+     
       ),
     },
   ];
 
+  const [open, setOpen] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [folderName, setFolderName] = useState();
 
   const [currentPath, setCurrentPath] = useState([
-    { name: "/", key: "1", folder: false },
+    { name: "/", key: "/", folder: false },
   ]);
 
   const [tableProps, refresh, query, params] = useTable(queryStorage);
@@ -81,7 +99,7 @@ const Storage: React.FC<{}> = () => {
     if (record.folder) {
       setCurrentPath((prev) => [
         ...prev,
-        { name: record.name, key: record.key, folder: false },
+        { name: record.name, key: record.name, folder: false },
       ]);
     }
   };
@@ -93,17 +111,59 @@ const Storage: React.FC<{}> = () => {
   };
 
  
-  const handleDelete = (key) => {
-    const updatedData = data.filter((item) => item.key !== key);
-    setData(updatedData);
+  const handleDelete =async (key) => {
+    const p = currentPath.splice(1).map(item => item.name).join('/')
+    const r = await deleteFolder({path: p ? p+"/"+key : key})
+    if(r.successful){
+      if(params && params.path){
+        const m = params.path.split('/').filter(s => s)
+          .map(item => ({ name: item, key: item, folder: false }))
+        setCurrentPath((prev) => [
+        ...prev,
+        ...m,
+        ]);
+      } else{
+         setTimeout(() => {
+          refresh()
+        }, 200);
+      }
+
+    }
+
   };
   
+  const handleOk = async () => {
+    const p = currentPath.splice(1).map(item => item.name).join('/')
+    if(folderName && folderName !== '') {
+      setConfirmLoading(true);
+      const r  = await createFolder({path: p ? p+"/"+folderName : folderName})
+      if(r.successful){
+        if(params && params.path){
+          const m = params.path.split('/').filter(s => s)
+          .map(item => ({ name: item, key: item, folder: false }))
+          setCurrentPath((prev) => [
+          ...prev,
+          ...m,
+          ]);
+        } else {
+          refresh()
+        }
+      
+        setTimeout(() => {
+          setOpen(false);
+          setConfirmLoading(false);
+          // refresh()
+        }, 500);
+      }
+    }
+  };
+
   return (
     <Layout className="page-layout">
       <Breadcrumb />
    
       <Layout.Content className="layout-content">
-        <CustomUpload />
+        <CustomUpload paths={params && params.path}/>
       </Layout.Content>
 
       <Layout.Content className="layout-content">
@@ -120,13 +180,24 @@ const Storage: React.FC<{}> = () => {
           </Space>
 
           <Space size="small">
-            <Button icon={<PlusOutlined />} type="link" block>
+            <Button icon={<PlusOutlined />} type="link" block onClick={() => setOpen(true)}>
               新建文件夹
             </Button>
           </Space>
         </div>
         <Table columns={columns} {...tableProps} rowKey={record => record.name} />
       </Layout.Content>
+
+      <Modal
+        title="新建文件夹"
+        open={open}
+        onOk={handleOk}
+        confirmLoading={confirmLoading}
+        onCancel={() => setOpen(false)}
+      >
+        <Input placeholder="文件夹名称"  onChange={(e) => setFolderName(e.target.value)}/>
+      </Modal>
+
     </Layout>
   );
 };
