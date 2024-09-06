@@ -67,7 +67,7 @@ const Storage: React.FC<{}> = () => {
             placement="left"
             title="重命名"
             description={
-              <div style={{ paddingInline: "20px",width: '400px' }}>
+              <div style={{ paddingInline: "20px", width: "400px" }}>
                 {/* <Input
                   disabled
                   placeholder="文件夹名称"
@@ -83,7 +83,6 @@ const Storage: React.FC<{}> = () => {
             }
             onConfirm={() => handleRename(record.name, rename)}
             okButtonProps={{ loading: confirmRNLoading }}
-
             okText="确认"
             cancelText="取消"
           >
@@ -120,7 +119,6 @@ const Storage: React.FC<{}> = () => {
   const [reNameOpen, setReNameOpen] = useState(false);
   const [confirmRNLoading, setConfirmRNLoading] = useState(false);
   const [rename, setRename] = useState();
-
 
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
@@ -178,17 +176,19 @@ const Storage: React.FC<{}> = () => {
     }
   };
 
-  const handleRename = async (key,tkey) => {
+  const handleRename = async (key, tkey) => {
     const p = currentPath
       .splice(1)
       .map((item) => item.name)
       .join("/");
 
-      console.log(p ? p + "/" + key : key)
-      console.log(p ? p + "/" + tkey : tkey)
+    console.log(p ? p + "/" + key : key);
+    console.log(p ? p + "/" + tkey : tkey);
 
-    const r = await renameFolder({ sourceKey: p ? p + "/" + key : key, targetKey: p ? p + "/" + tkey : tkey });
-
+    const r = await renameFolder({
+      sourceKey: p ? p + "/" + key : key,
+      targetKey: p ? p + "/" + tkey : tkey,
+    });
 
     if (r.successful) {
       if (params && params.path) {
@@ -249,7 +249,7 @@ const Storage: React.FC<{}> = () => {
             {currentPath.map((node, index) => (
               <React.Fragment key={index}>
                 <a key={index} onClick={() => navigateToPath(index)}>
-                  {node.name}
+                  <strong>{node.name}</strong>
                 </a>
                 {index < currentPath.length - 1 && node.name !== "/" && (
                   <span
@@ -264,12 +264,11 @@ const Storage: React.FC<{}> = () => {
           </Space>
 
           <Space size="small">
-            <Button
-              icon={<PlusOutlined />}
-              type="link"
-              block
-              onClick={() => setOpen(true)}
-            >
+            {/* <Button type="dashed" icon={<SearchOutlined />}>
+        Search
+      </Button> */}
+
+            <Button icon={<PlusOutlined />} block onClick={() => setOpen(true)}>
               新建文件夹
             </Button>
           </Space>
