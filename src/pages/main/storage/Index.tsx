@@ -67,15 +67,16 @@ const Storage: React.FC<{}> = () => {
             placement="left"
             title="重命名"
             description={
-              <div style={{ paddingInline: "20px" }}>
-                <Input
+              <div style={{ paddingInline: "20px",width: '400px' }}>
+                {/* <Input
                   disabled
                   placeholder="文件夹名称"
                   value={record.name}
                   
-                />
+                /> */}
                 <Input
                   placeholder="新名称"
+                  value={rename}
                   onChange={(e) => setRename(e.target.value)}
                 />
               </div>
@@ -90,7 +91,7 @@ const Storage: React.FC<{}> = () => {
               style={{ height: 0 }}
               type="link"
               icon={<EditOutlined />}
-              onClick={(e) => e.stopPropagation()}
+              onClick={(e) => setRename(record.name)}
             />
           </Popconfirm>
           <Popconfirm
