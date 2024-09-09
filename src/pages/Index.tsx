@@ -14,8 +14,6 @@ import('@/styles/TableLayout.css')
 
 import { useStartUploadWorker } from "@/hooks/UseUploadWorker";
 
-
-
 // 获取菜单创建路由
 const App = () => {
   useStartUploadWorker()

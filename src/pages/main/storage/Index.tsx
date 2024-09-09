@@ -26,6 +26,7 @@ import {
   deleteFolder,
   renameFolder,
 } from "./service";
+
 import CustomUpload from "./CustomUpload";
 
 const Storage: React.FC<{}> = () => {
@@ -62,67 +63,61 @@ const Storage: React.FC<{}> = () => {
       width: "12%",
       render: (_, record) => (
         <Space size="middle">
-          <Popconfirm
-            icon={null}
-            placement="left"
-            title="重命名"
-            description={
-              <div style={{ paddingInline: "20px", width: "400px" }}>
-                {/* <Input
-                  disabled
-                  placeholder="文件夹名称"
-                  value={record.name}
-                  
-                /> */}
-                <Input
-                  placeholder="新名称"
-                  value={rename}
-                  onChange={(e) => setRename(e.target.value)}
-                />
-              </div>
-            }
-            onConfirm={() => handleRename(record.name, rename)}
-            okButtonProps={{ loading: confirmRNLoading }}
-            okText="确认"
-            cancelText="取消"
-          >
-            <Button
-              style={{ height: 0 }}
-              type="link"
-              icon={<EditOutlined />}
-              onClick={(e) => setRename(record.name)}
-            />
-          </Popconfirm>
-          <Popconfirm
-            placement="left"
-            title="确认删除?"
-            description={
-              <Typography.Text type="danger">
-                同时会删除该文件夹下面的所有文件及文件夹！
-              </Typography.Text>
-            }
-            onConfirm={() => handleDelete(record.name)}
-            okText="确认"
-            cancelText="取消"
-          >
-            <Button
-              style={{ height: 0 }}
-              type="link"
-              icon={<DeleteOutlined />}
-              onClick={(e) => e.stopPropagation()}
-            />
-          </Popconfirm>
+          <Permission code={["storage:rename"]}>
+            <Popconfirm
+              icon={null}
+              placement="left"
+              title="重命名"
+              description={
+                <div style={{ paddingInline: "20px", width: "400px" }}>
+                  <Input
+                    placeholder="新名称"
+                    value={rename}
+                    onChange={(e) => setRename(e.target.value)}
+                  />
+                </div>
+              }
+              onConfirm={() => handleRename(record.name, rename)}
+              okText="确认"
+              cancelText="取消"
+            >
+              <Button
+                style={{ height: 0 }}
+                type="link"
+                icon={<EditOutlined />}
+                onClick={(e) => setRename(record.name)}
+              />
+            </Popconfirm>
+          </Permission>
+          <Permission code={["storage:delete"]}>
+            <Popconfirm
+              placement="left"
+              title="确认删除?"
+              description={
+                <Typography.Text type="danger">
+                  同时会删除该文件夹下面的所有文件及文件夹！
+                </Typography.Text>
+              }
+              onConfirm={() => handleDelete(record.name)}
+              okText="确认"
+              cancelText="取消"
+            >
+              <Button
+                style={{ height: 0 }}
+                type="link"
+                icon={<DeleteOutlined />}
+                onClick={(e) => e.stopPropagation()}
+              />
+            </Popconfirm>
+          </Permission>
         </Space>
       ),
     },
   ];
-  const [reNameOpen, setReNameOpen] = useState(false);
-  const [confirmRNLoading, setConfirmRNLoading] = useState(false);
-  const [rename, setRename] = useState();
-
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [folderName, setFolderName] = useState();
+  const [folderName, setFolderName] = useState<string>();
+  const [rename, setRename] = useState<string>();
 
   const [currentPath, setCurrentPath] = useState([
     { name: "/", key: "/", folder: false },
@@ -147,8 +142,7 @@ const Storage: React.FC<{}> = () => {
         { name: record.name, key: record.name, folder: false },
       ]);
     } else {
-       // 打开新的窗口
-      window.open(record.url, '_blank', 'noopener,noreferrer');
+      window.open(record.url, "_blank", "noopener,noreferrer");
     }
   };
 
@@ -184,10 +178,6 @@ const Storage: React.FC<{}> = () => {
       .splice(1)
       .map((item) => item.name)
       .join("/");
-
-    console.log(p ? p + "/" + key : key);
-    console.log(p ? p + "/" + tkey : tkey);
-
     const r = await renameFolder({
       sourceKey: p ? p + "/" + key : key,
       targetKey: p ? p + "/" + tkey : tkey,
@@ -241,10 +231,11 @@ const Storage: React.FC<{}> = () => {
   return (
     <Layout className="page-layout">
       <Breadcrumb />
-
-      <Layout.Content className="layout-content">
-        <CustomUpload paths={params && params.path} />
-      </Layout.Content>
+      <Permission code={["storage:upload"]}>
+        <Layout.Content className="layout-content">
+          <CustomUpload paths={params && params.path} />
+        </Layout.Content>
+      </Permission>
 
       <Layout.Content className="layout-content">
         <div className="layout-title">
@@ -267,13 +258,15 @@ const Storage: React.FC<{}> = () => {
           </Space>
 
           <Space size="small">
-            {/* <Button type="dashed" icon={<SearchOutlined />}>
-        Search
-      </Button> */}
-
-            <Button icon={<PlusOutlined />} block onClick={() => setOpen(true)}>
-              新建文件夹
-            </Button>
+            <Permission code={["storage:newfolder"]}>
+              <Button
+                icon={<PlusOutlined />}
+                block
+                onClick={() => setOpen(true)}
+              >
+                新建文件夹
+              </Button>
+            </Permission>
           </Space>
         </div>
         <Table

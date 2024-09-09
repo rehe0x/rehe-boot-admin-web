@@ -39,7 +39,11 @@ const judgeOkState = async (res: Response): Promise<Response> => {
     h_error(res.statusText)
   }
   if (cloneRes.code !== 0) {
-    !isWorker() && message.error(`${cloneRes.msg}${cloneRes.code}`);
+    if(isWorker()){
+      self.postMessage({ type: 'error', message: cloneRes.msg });
+    } else {
+      message.error(`${cloneRes.msg}${cloneRes.code}`);
+    }
   } 
   return res;
 };
@@ -72,6 +76,9 @@ class http {
       if(token){
         headers.append('Authorization', 'Bearer '+token);
       }
+    } else {
+      headers.append('Authorization', options['Authorization']);
+      delete options.Authorization
     }
     
     const defaultOptions: RequestInit = {

@@ -29,6 +29,11 @@ export const useStartUploadWorker = () => {
           }
         }
       };
+      worker.onerror = (event) => {
+        console.error('Worker error:', event.message);
+        event.preventDefault();  // 防止错误冒泡
+      };
+      
       messageManager.subscribe<any>("upload_worker", (message) => {
         if (message.name === "upload") {
           worker.postMessage({
