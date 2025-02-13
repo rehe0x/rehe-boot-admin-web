@@ -29,6 +29,12 @@ export default defineConfig({
         changeOrigin: true // 是否改变源地址,
         // rewrite: (path) => path.replace(/^\/api/, ''), // 去掉路径中的 /api 前缀
       },
+
+      '/scheduled-service': {
+        target: 'http://localhost:8086', // 代理的目标地址
+        changeOrigin: true // 是否改变源地址,
+        // rewrite: (path) => path.replace(/^\/api/, ''), // 去掉路径中的 /api 前缀
+      },
     },
   },
 })
